@@ -10,6 +10,7 @@ const server = app.listen(process.env.PORT || 8082, () => {
 });
 
 app.get("/", (req, res) => {
+    console.log(process.env.mg_db_uri);
     res.send("hola mundo");
 });
 
