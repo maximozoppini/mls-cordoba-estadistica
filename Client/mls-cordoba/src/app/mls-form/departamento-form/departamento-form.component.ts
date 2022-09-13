@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
+  BehaviorSubject,
   debounceTime,
   filter,
   map,
@@ -42,6 +43,7 @@ import { tiposVenta } from '../models/tiposVenta';
 import { tiposCaptacion } from '../models/tiposCaptacion';
 import { MatChipList } from '@angular/material/chips';
 import * as moment from 'moment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-departamento-form',
@@ -78,6 +80,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public startDate = new Date();
 
   public destroy$ = new Subject<boolean>();
+  public loading$ = new BehaviorSubject<boolean>(false);
 
   public filteredBarrios$!: Observable<SelecItem[]>;
   public filteredExtras$!: Observable<SelecItem[]>;
@@ -92,6 +95,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     private service: MlsServiceService
   ) {}
@@ -270,9 +274,17 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
     depto.fechaVentaTexto = depto.fechaVenta.format('YYYY-MM-DD');
     depto.extras = this.extras.length > 0 ? this.extras.map((x) => x.id) : [];
     depto.formasPagoChipList = depto.formasPagoChipList.map((x: any) => x.id);
+    this.loading$.next(true);
     this.service
       .saveDepartamento(depto)
       .pipe(take(1))
-      .subscribe((data) => console.log(data));
+      .subscribe((data) => {
+        console.log(data);
+        this.loading$.next(false);
+        this.snackBar.open(
+          'Se pudo registrar exitosamente el departamento',
+          'salir'
+        );
+      });
   }
 }

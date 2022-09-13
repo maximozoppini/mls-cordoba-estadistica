@@ -1,3 +1,8 @@
+<ng-container *ngIf="loading$ | async">
+  <div class="overlay"></div>
+  <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
+</ng-container>
+
 <form [formGroup]="departamentoForm" class="form">
   <div class="row">
     <div class="col-md-6">

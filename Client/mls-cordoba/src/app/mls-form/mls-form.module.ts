@@ -28,6 +28,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
       },
     ]),
     ReactiveFormsModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
     MatDatepickerModule,
     MatMomentDateModule,
     MatSlideToggleModule,
