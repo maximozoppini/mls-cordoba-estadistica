@@ -100,7 +100,6 @@ app.get("/api/barrios", (req, res) => {
 });
 
 app.post("/api/departamento", (req, res) => {
-    console.log(req.body);
     const base = require("airtable").base("appAPeVcmiZuk0Kl2");
     base("Departamentos").create(
         [
@@ -109,16 +108,49 @@ app.post("/api/departamento", (req, res) => {
                     Barrio: [req.body.barrio.id],
                     Calle: req.body.calle,
                     Altura: req.body.altura,
-                    "Tipo de Desarrollo": req.body.tipoDesarrollo,
+                    "Tipo de Desarrollo": req.body.tipoDesarrollo.id,
+                    "Superficie cubierta PROPIA": req.body.supCubierta,
+                    "Tipo de superficie descubierta":
+                        req.body.tipoSuperficie.id,
+                    "Superficie descubierta PROPIA": req.body.supDescubierta,
+                    "N° de Piso": req.body.numPiso.id,
+                    Disposición: req.body.disposicion.id,
+                    Dormitorios: req.body.dormitorios.id,
+                    Baños: req.body.banios.id,
+                    "Baño social": req.body.banioSocial.id,
+                    Cochera: req.body.cochera.id,
+                    Extras: req.body.extras,
+                    Antigüedad: req.body.antiguedad.id,
+                    "Cantidad de años": req.body.antiguedadAnios,
+                    Categoría: req.body.categoria.id,
+                    "Estado de conservación": req.body.estadoConservacion.id,
+                    "Estado de Ocupación": req.body.estadoOcupacion.id,
+                    "Tipo de Vendedor": req.body.tipoVendedor.id,
+                    "Formalización de la venta": req.body.formalizacionVenta.id,
+                    "Destino de Uso": req.body.destinoUso.id,
+                    "Forma de Pago": req.body.formasPagoChipList,
+                    "Fecha de ingreso": req.body.fechaIngresoTexto,
+                    "Precio Inicial Historico - Moneda - USD?":
+                        req.body.precioInicialMoneda,
+                    "Ultimo Precio Publicado - Moneda - USD?":
+                        req.body.ultimoPrecioMoneda,
+                    "Precio de Venta - Moneda - USD?":
+                        req.body.precioVentaMoneda,
+                    "Precio Inicial Historico": req.body.montoPrecioHistorico,
+                    "Ultimo Precio Publicado": req.body.montoUltimoPrecio,
+                    "Precio de Venta": req.body.montoPrecioVenta,
+                    "Fecha de venta": req.body.fechaVentaTexto,
+                    "Tipo de Captación": req.body.tipoCaptacion.id,
+                    "Tipo de Venta": req.body.tipoVenta.id,
                 },
             },
         ],
         function (err, records) {
             if (err) {
-                console.log(err);
+                res.json(err);
                 return;
             }
-            console.log(records);
+            res.json({ id: records[0].getId() });
         }
     );
 });
