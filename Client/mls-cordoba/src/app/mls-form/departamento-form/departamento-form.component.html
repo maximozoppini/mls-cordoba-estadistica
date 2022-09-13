@@ -35,6 +35,9 @@
           formControlName="calle"
           placeholder="Ingrese la calle unicamente"
         />
+        <mat-error *ngIf="deptoFormContrls['calle'].hasError('required')"
+          >Campo requerido</mat-error
+        >
         <mat-hint>No agregue numero, ni ciudad. SOLO CALLE</mat-hint>
       </mat-form-field>
     </div>
@@ -47,6 +50,9 @@
           formControlName="altura"
           placeholder="Ingrese la altura aprox"
         />
+        <mat-error *ngIf="deptoFormContrls['altura'].hasError('required')"
+          >Campo requerido</mat-error
+        >
         <mat-hint>No ingrese la altura exacta</mat-hint>
       </mat-form-field>
     </div>
@@ -56,45 +62,38 @@
     <div class="col-md-3">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Tipo de Desarrollo</mat-label>
-        <input
-          type="text"
-          placeholder="Seleccionar un tipo de desarrollo"
-          matInput
-          [matAutocomplete]="tipoDesarrollo"
-          formControlName="tipoDesarrollo"
-        />
-        <mat-autocomplete #tipoDesarrollo="matAutocomplete">
-          <mat-option
-            *ngFor="let tipoDesarrollo of filteredTipoDesarrollo$ | async"
-            [value]="tipoDesarrollo.value"
-            >{{ tipoDesarrollo.value }}</mat-option
-          >
-        </mat-autocomplete>
+        <mat-select formControlName="tipoDesarrollo">
+          <mat-option *ngFor="let item of tiposDesarrollo" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="deptoFormContrls['tipoDesarrollo'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-3">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Superficie cubierta PROPIA</mat-label>
         <input matInput type="number" formControlName="supCubierta" />
+        <mat-error *ngIf="deptoFormContrls['supCubierta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-3">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Tipo de superficie descubierta</mat-label>
-        <input
-          type="text"
-          placeholder="Seleccionar un tipo"
-          matInput
-          [matAutocomplete]="tipoSup"
-          formControlName="tipoSuperficie"
-        />
-        <mat-autocomplete #tipoSup="matAutocomplete">
-          <mat-option
-            *ngFor="let tipoSuperficie of filteredTipoSuperficie$ | async"
-            [value]="tipoSuperficie.value"
-            >{{ tipoSuperficie.value }}</mat-option
-          >
-        </mat-autocomplete>
+        <mat-select formControlName="tipoSuperficie">
+          <mat-option *ngFor="let item of tiposSuperficies" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="deptoFormContrls['tipoSuperficie'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-3">
@@ -108,91 +107,66 @@
     <div class="col-md-2">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>N° de Piso</mat-label>
-        <input
-          type="text"
-          matInput
-          [matAutocomplete]="numPiso"
-          formControlName="numPiso"
-        />
-        <mat-autocomplete #numPiso="matAutocomplete">
-          <mat-option
-            *ngFor="let numPiso of filteredNumerosPiso$ | async"
-            [value]="numPiso.value"
-            >{{ numPiso.value }}</mat-option
-          >
-        </mat-autocomplete>
+        <mat-select formControlName="numPiso">
+          <mat-option *ngFor="let item of numerosPisos" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="deptoFormContrls['numPiso'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-3">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Disposición</mat-label>
-        <input
-          type="text"
-          matInput
-          [matAutocomplete]="disposicion"
-          formControlName="disposicion"
-        />
-        <mat-autocomplete #disposicion="matAutocomplete">
-          <mat-option
-            *ngFor="let disposicion of filteredDisposiciones$ | async"
-            [value]="disposicion.value"
-            >{{ disposicion.value }}</mat-option
-          >
-        </mat-autocomplete>
+        <mat-select formControlName="disposicion">
+          <mat-option *ngFor="let item of disposiciones" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="deptoFormContrls['disposicion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-3">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Dormitorios</mat-label>
-        <input
-          type="text"
-          matInput
-          [matAutocomplete]="dormitorios"
-          formControlName="dormitorios"
-        />
-        <mat-autocomplete #dormitorios="matAutocomplete">
-          <mat-option
-            *ngFor="let dormitorios of filteredDormitorios$ | async"
-            [value]="dormitorios.value"
-            >{{ dormitorios.value }}</mat-option
-          >
-        </mat-autocomplete>
+        <mat-select formControlName="dormitorios">
+          <mat-option *ngFor="let item of dormitorios" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="deptoFormContrls['dormitorios'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-2">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Baños</mat-label>
-        <input
-          type="text"
-          matInput
-          [matAutocomplete]="banios"
-          formControlName="banios"
-        />
-        <mat-autocomplete #banios="matAutocomplete">
-          <mat-option
-            *ngFor="let banios of filteredBanios$ | async"
-            [value]="banios.value"
-            >{{ banios.value }}</mat-option
-          >
-        </mat-autocomplete>
+        <mat-select formControlName="banios">
+          <mat-option *ngFor="let item of banios" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="deptoFormContrls['banios'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-2">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Bañio social</mat-label>
-        <input
-          type="text"
-          matInput
-          [matAutocomplete]="banioSocial"
-          formControlName="banioSocial"
-        />
-        <mat-autocomplete #banioSocial="matAutocomplete">
-          <mat-option
-            *ngFor="let banioSocial of filteredBaniosSociales$ | async"
-            [value]="banioSocial.value"
-            >{{ banioSocial.value }}</mat-option
-          >
-        </mat-autocomplete>
+        <mat-select formControlName="banioSocial">
+          <mat-option *ngFor="let item of baniosSociales" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="deptoFormContrls['banioSocial'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
   </div>
@@ -200,19 +174,14 @@
     <div class="col-md-6">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Cochera</mat-label>
-        <input
-          type="text"
-          matInput
-          [matAutocomplete]="cochera"
-          formControlName="cochera"
-        />
-        <mat-autocomplete #cochera="matAutocomplete">
-          <mat-option
-            *ngFor="let cochera of filteredCocheras$ | async"
-            [value]="cochera.value"
-            >{{ cochera.value }}</mat-option
-          >
-        </mat-autocomplete>
+        <mat-select formControlName="cochera">
+          <mat-option *ngFor="let item of tiposCochera" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="deptoFormContrls['cochera'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-6">
@@ -360,8 +329,14 @@
     <div class="col-md-12">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Forma de pago - Elegir 1 o VARIAS formas de pago</mat-label>
-        <mat-chip-list #chipListFormaPago aria-label="formas de pago">
+        <mat-chip-list
+          #chipListFormaPago
+          formControlName="formasPagoChipList"
+          aria-label="formas de pago"
+        >
           <mat-chip
+            color="accent"
+            selected="true"
             *ngFor="let item of formasPago"
             (removed)="removeFormaPago(item)"
           >
@@ -372,8 +347,8 @@
           </mat-chip>
           <input
             placeholder="Agregar..."
-            #formaPagoInput
             formControlName="formasPago"
+            #formaPagoInput
             [matAutocomplete]="formasPagoAuto"
             [matChipInputFor]="chipListFormaPago"
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -390,6 +365,7 @@
             {{ item.value }}
           </mat-option>
         </mat-autocomplete>
+        <mat-error>Campo requerido</mat-error>
       </mat-form-field>
     </div>
   </div>
@@ -412,6 +388,9 @@
           #pickerFechaIngreso
           [startAt]="startDate"
         ></mat-datepicker>
+        <mat-error *ngIf="deptoFormContrls['fechaIngreso'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-5">
@@ -423,6 +402,10 @@
       <mat-form-field appearance="outline" style="width: 70%">
         <mat-label>Precio Inicial Historico</mat-label>
         <input matInput type="number" formControlName="montoPrecioHistorico" />
+        <mat-error
+          *ngIf="deptoFormContrls['montoPrecioHistorico'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-5">
@@ -434,6 +417,10 @@
       <mat-form-field appearance="outline" style="width: 70%">
         <mat-label>Último Precio Publicado</mat-label>
         <input matInput type="number" formControlName="montoUltimoPrecio" />
+        <mat-error
+          *ngIf="deptoFormContrls['montoUltimoPrecio'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
   </div>
@@ -456,6 +443,9 @@
           #pickerFechaVenta
           [startAt]="startDate"
         ></mat-datepicker>
+        <mat-error *ngIf="deptoFormContrls['fechaVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-4">
@@ -471,6 +461,10 @@
       >
         <mat-label>Precio de venta</mat-label>
         <input matInput type="number" formControlName="montoPrecioVenta" />
+        <mat-error
+          *ngIf="deptoFormContrls['montoPrecioVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-2">
@@ -505,6 +499,7 @@
     <div class="col">
       <button
         (click)="enviarForm()"
+        [disabled]="enviarEnable()"
         mat-raised-button
         class="float-end"
         color="primary"
