@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
     res.send("hola mls");
 });
 
-app.post("/updateBarrios/", (req, res) => {
+app.post("/updateBarrios", (req, res) => {
     const mongoClient = mongo.MongoClient;
     let barrios = [];
     const base = require("airtable").base(req.query.base);
@@ -100,6 +100,7 @@ app.get("/api/barrios", (req, res) => {
 });
 
 app.post("/api/departamento", (req, res) => {
+    console.log(req.body);
     const base = require("airtable").base("appAPeVcmiZuk0Kl2");
     base("Departamentos").create(
         [
@@ -109,6 +110,8 @@ app.post("/api/departamento", (req, res) => {
                     Calle: req.body.calle,
                     Altura: req.body.altura,
                     "Tipo de Desarrollo": req.body.tipoDesarrollo.id,
+                    Amenities: req.body.amenities,
+                    Ascensor: req.body.ascensor,
                     "Superficie cubierta PROPIA": req.body.supCubierta,
                     "Tipo de superficie descubierta":
                         req.body.tipoSuperficie.id,
@@ -130,15 +133,26 @@ app.post("/api/departamento", (req, res) => {
                     "Destino de Uso": req.body.destinoUso.id,
                     "Forma de Pago": req.body.formasPagoChipList,
                     "Fecha de ingreso": req.body.fechaIngresoTexto,
-                    "Precio Inicial Historico - Moneda - USD?":
-                        req.body.precioInicialMoneda,
-                    "Ultimo Precio Publicado - Moneda - USD?":
-                        req.body.ultimoPrecioMoneda,
-                    "Precio de Venta - Moneda - USD?":
-                        req.body.precioVentaMoneda,
-                    "Precio Inicial Historico": req.body.montoPrecioHistorico,
-                    "Ultimo Precio Publicado": req.body.montoUltimoPrecio,
-                    "Precio de Venta": req.body.montoPrecioVenta,
+                    "Precio Inicial Historico - USD": !req.body
+                        .precioInicialPeso
+                        ? req.body.montoPrecioHistorico
+                        : 0,
+                    "Precio Inicial Historico - PESO": req.body
+                        .precioInicialPeso
+                        ? req.body.montoPrecioHistorico
+                        : 0,
+                    "Ultimo Precio Publicado - USD": !req.body.ultimoPrecioPeso
+                        ? req.body.montoUltimoPrecio
+                        : 0,
+                    "Ultimo Precio Publicado - PESO": req.body.ultimoPrecioPeso
+                        ? req.body.montoUltimoPrecio
+                        : 0,
+                    "Precio de Venta - USD": !req.body.precioVentaPeso
+                        ? req.body.montoPrecioVenta
+                        : 0,
+                    "Precio de Venta - PESO": req.body.precioVentaPeso
+                        ? req.body.montoPrecioVenta
+                        : 0,
                     "Fecha de venta": req.body.fechaVentaTexto,
                     "Tipo de Captación": req.body.tipoCaptacion.id,
                     "Tipo de Venta": req.body.tipoVenta.id,
@@ -147,7 +161,7 @@ app.post("/api/departamento", (req, res) => {
         ],
         function (err, records) {
             if (err) {
-                res.json(err);
+                res.errored(err);
                 return;
             }
             res.json({ id: records[0].getId() });

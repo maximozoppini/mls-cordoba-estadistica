@@ -5,7 +5,13 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  NgForm,
+  Validators,
+} from '@angular/forms';
 import {
   BehaviorSubject,
   debounceTime,
@@ -78,17 +84,18 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public formasPago: SelecItem[] = [];
   public departamentoForm!: FormGroup;
   public startDate = new Date();
+  public defaultValue: any;
 
   public destroy$ = new Subject<boolean>();
   public loading$ = new BehaviorSubject<boolean>(false);
 
   public filteredBarrios$!: Observable<SelecItem[]>;
   public filteredExtras$!: Observable<SelecItem[]>;
-  public filteredFormasPago$!: Observable<SelecItem[]>;
 
   @ViewChild('extraInput') extraInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('formaPagoInput') formaPagoInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('chipListFormaPago') chipListFormaPago!: MatChipList;
+  @ViewChild('chipList') chipList!: MatChipList;
+  @ViewChild('chipListExtras') chipListExtras!: MatChipList;
+  @ViewChild('form') form!: NgForm;
 
   get deptoFormContrls() {
     return this.departamentoForm.controls;
@@ -126,6 +133,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
       banioSocial: ['', [Validators.required]],
       cochera: ['', [Validators.required]],
       extras: [''],
+      extrasChipList: ['', [Validators.required]],
       categoria: ['', [Validators.required]],
       antiguedad: ['', [Validators.required]],
       antiguedadAnios: [{ value: '', disabled: true }],
@@ -134,19 +142,22 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
       tipoVendedor: ['', [Validators.required]],
       formalizacionVenta: ['', [Validators.required]],
       destinoUso: ['', [Validators.required]],
-      formasPago: [''],
-      formasPagoChipList: ['', [Validators.required]],
-      fechaIngreso: [moment(), [Validators.required]],
-      precioInicialMoneda: [false],
-      ultimoPrecioMoneda: [false],
-      montoPrecioHistorico: ['', [Validators.required]],
-      montoUltimoPrecio: ['', [Validators.required]],
-      fechaVenta: [moment(), [Validators.required]],
-      precioVentaMoneda: [false],
+      formaPagoChipList: ['', [Validators.required]],
+      fechaIngreso: ['', [Validators.required]],
+      amenities: [false],
+      ascensor: [false],
+      precioInicialPeso: [false],
+      ultimoPrecioPeso: [false],
+      montoPrecioHistorico: [''],
+      montoUltimoPrecio: [''],
+      fechaVenta: ['', [Validators.required]],
+      precioVentaPeso: [false],
       montoPrecioVenta: ['', [Validators.required]],
       tipoCaptacion: ['', [Validators.required]],
       tipoVenta: ['', [Validators.required]],
     });
+
+    this.defaultValue = this.departamentoForm.value;
 
     this.filteredBarrios$ = this.departamentoForm.controls[
       'barrio'
@@ -160,15 +171,11 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
       })
     );
     this.filteredExtras$ = this.creacionPipes('extras', this.todosLosExtras);
-    this.filteredFormasPago$ = this.creacionPipes(
-      'formasPago',
-      this.allFormasPago
-    );
 
-    this.departamentoForm.controls['formasPagoChipList'].statusChanges
+    this.departamentoForm.controls['extrasChipList'].statusChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(
-        (status) => (this.chipListFormaPago.errorState = status === 'INVALID')
+        (status) => (this.chipListExtras.errorState = status === 'INVALID')
       );
 
     this.departamentoForm.controls['tipoSuperficie'].valueChanges
@@ -228,6 +235,16 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
     return barrio && barrio.value ? barrio.value : '';
   }
 
+  changeSelected($event: any, item: SelecItem): void {
+    if ($event.selected) {
+      this.formasPago.push(item);
+    } else {
+      this.formasPago = this.formasPago.filter((x) => x.id !== item.id);
+    }
+    console.log(this.formasPago);
+    item.selected = $event.selected;
+  }
+
   removeExtra(extra: SelecItem): void {
     extra.selected = false;
     const index = this.extras.indexOf(extra);
@@ -235,33 +252,14 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
       this.extras.splice(index, 1);
     }
     this.departamentoForm.controls['extras'].setValue(null);
+    this.departamentoForm.controls['extrasChipList'].setValue(this.extras);
   }
   selectedExtras(event: MatAutocompleteSelectedEvent): void {
     event.option.value.selected = true;
     this.extras.push(event.option.value);
     this.extraInput.nativeElement.value = '';
     this.departamentoForm.controls['extras'].setValue(null);
-  }
-
-  removeFormaPago(formaPago: SelecItem): void {
-    formaPago.selected = false;
-    const index = this.formasPago.indexOf(formaPago);
-    if (index >= 0) {
-      this.formasPago.splice(index, 1);
-    }
-    this.departamentoForm.controls['formasPago'].setValue(null);
-    this.departamentoForm.controls['formasPagoChipList'].setValue(
-      this.formasPago
-    );
-  }
-  selectedFormaPago(event: MatAutocompleteSelectedEvent): void {
-    event.option.value.selected = true;
-    this.formasPago.push(event.option.value);
-    this.formaPagoInput.nativeElement.value = '';
-    this.departamentoForm.controls['formasPagoChipList'].setValue(
-      this.formasPago
-    );
-    this.departamentoForm.controls['formasPago'].setValue(null);
+    this.departamentoForm.controls['extrasChipList'].setValue(this.extras);
   }
 
   enviarEnable(): boolean {
@@ -272,19 +270,29 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
     let depto = this.departamentoForm.value;
     depto.fechaIngresoTexto = depto.fechaIngreso.format('YYYY-MM-DD');
     depto.fechaVentaTexto = depto.fechaVenta.format('YYYY-MM-DD');
-    depto.extras = this.extras.length > 0 ? this.extras.map((x) => x.id) : [];
-    depto.formasPagoChipList = depto.formasPagoChipList.map((x: any) => x.id);
+    depto.extras = depto.extrasChipList.map((x: any) => x.id);
+    depto.formasPagoChipList = this.formasPago.map((x: any) => x.id);
+
     this.loading$.next(true);
     this.service
       .saveDepartamento(depto)
       .pipe(take(1))
-      .subscribe((data) => {
-        console.log(data);
-        this.loading$.next(false);
-        this.snackBar.open(
-          'Se pudo registrar exitosamente el departamento',
-          'salir'
-        );
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.departamentoForm.reset();
+          this.form.resetForm();
+          this.loading$.next(false);
+          this.snackBar.open(
+            'Se pudo registrar exitosamente el departamento',
+            'salir'
+          );
+        },
+        error: (err) => {
+          this.loading$.next(false);
+          this.snackBar.open('NO SE pudo registrar  el departamento', 'salir');
+          console.log(err);
+        },
       });
   }
 }

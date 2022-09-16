@@ -13,25 +13,45 @@
       >
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
           <li>
-            <a routerLink="/home" class="nav-link px-2 link-secondary"
+            <a
+              routerLink="/home"
+              routerLinkActive="active"
+              class="nav-link px-2 link-secondary"
               >Inicio</a
             >
           </li>
           <li>
-            <a routerLink="/form/departamento" class="nav-link px-2 link-dark"
+            <a
+              routerLink="/form/departamento"
+              routerLinkActive="active"
+              class="nav-link px-2 link-dark"
               >Departamentos</a
             >
           </li>
           <li>
-            <a routerLink="/form/casa" class="nav-link px-2 link-dark">Casas</a>
+            <a
+              routerLink="/form/casa"
+              routerLinkActive="active"
+              class="nav-link px-2 link-dark"
+              >Casas</a
+            >
           </li>
           <li>
-            <a routerLink="/form/lote" class="nav-link px-2 link-dark">Lotes</a>
+            <a
+              routerLink="/form/lote"
+              routerLinkActive="active"
+              class="nav-link px-2 link-dark"
+              >Lotes</a
+            >
           </li>
         </ul>
 
         <div class="col-md-3 text-end">
-          <button type="button" class="btn btn-outline-primary me-2">
+          <button
+            *ngIf="false"
+            type="button"
+            class="btn btn-outline-primary me-2"
+          >
             Login
           </button>
         </div>

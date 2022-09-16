@@ -30,6 +30,21 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {
+  CurrencyMaskConfig,
+  CurrencyMaskModule,
+  CURRENCY_MASK_CONFIG,
+} from 'ng2-currency-mask';
+
+export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
+  align: 'left',
+  allowNegative: false,
+  decimal: ',',
+  precision: 2,
+  prefix: '$ ',
+  suffix: '',
+  thousands: '.',
+};
 
 @NgModule({
   declarations: [
@@ -51,6 +66,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
       },
     ]),
     ReactiveFormsModule,
+    CurrencyMaskModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatDatepickerModule,
@@ -76,6 +92,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     },
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { strict: true } },
+    { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig },
   ],
 })
 export class MlsFormModule {}
