@@ -1,1 +1,418 @@
-<p>lote-form works!</p>
+<ng-container *ngIf="loading$ | async">
+  <div class="overlay"></div>
+  <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
+</ng-container>
+
+<h1>Formulario para el alta de un Lote</h1>
+
+<form #form="ngForm" [formGroup]="loteForm" class="form">
+  <div class="row">
+    <div class="col-md-6">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Barrio</mat-label>
+        <input
+          type="text"
+          placeholder="Seleccionar un barrio"
+          matInput
+          id="barrio"
+          [matAutocomplete]="barrioAuto"
+          formControlName="barrio"
+        />
+        <mat-error *ngIf="loteFormContrls['barrio'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+        <mat-autocomplete
+          #barrioAuto="matAutocomplete"
+          [displayWith]="displayBarrioFn"
+        >
+          <mat-option
+            *ngFor="let barrio of filteredBarrios$ | async"
+            [value]="barrio"
+          >
+            {{ barrio.value }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Calle</mat-label>
+        <input
+          matInput
+          formControlName="calle"
+          placeholder="Ingrese la calle unicamente"
+        />
+        <mat-error *ngIf="loteFormContrls['calle'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+        <mat-hint>No agregue numero, ni ciudad. SOLO CALLE</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Altura aprox</mat-label>
+        <input
+          matInput
+          min="0"
+          type="number"
+          formControlName="altura"
+          placeholder="Ingrese la altura aprox"
+        />
+        <mat-error *ngIf="loteFormContrls['altura'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+        <mat-hint>No ingrese la altura exacta</mat-hint>
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider class="my-3"></mat-divider>
+  <div class="row">
+    <div class="col-md-2" style="padding-left: 0px; padding-right: 0px">
+      <mat-slide-toggle formControlName="esHousing" style="padding-top: 12px"
+        >Esta en housing?</mat-slide-toggle
+      >
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Nombre Housing</mat-label>
+        <input matInput formControlName="nomHousing" />
+        <mat-error *ngIf="loteFormContrls['nomHousing'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Ubicación dentro del barrio</mat-label>
+        <mat-select formControlName="tipoUbicacion">
+          <mat-option *ngFor="let item of tiposUbicacionBarrio" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="loteFormContrls['tipoUbicacion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Uso del Suelo</mat-label>
+        <mat-select formControlName="usoSuelo">
+          <mat-option *ngFor="let item of tiposUsoSuelo" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="loteFormContrls['usoSuelo'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Forma del lote</mat-label>
+        <mat-select formControlName="tipoFormaLote">
+          <mat-option *ngFor="let item of tiposFormaLote" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="loteFormContrls['tipoFormaLote'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo del lote</mat-label>
+        <mat-select formControlName="tipoLote">
+          <mat-option *ngFor="let item of tiposLote" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="loteFormContrls['tipoLote'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Superficie terreno</mat-label>
+
+        <input matInput min="0" type="number" formControlName="supTerreno" />
+        <mat-error *ngIf="loteFormContrls['supTerreno'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Metros de frente</mat-label>
+
+        <input matInput min="0" type="number" formControlName="metrosFrente" />
+        <mat-error *ngIf="loteFormContrls['metrosFrente'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Metros de fondo</mat-label>
+
+        <input matInput min="0" type="number" formControlName="metrosFondo" />
+        <mat-error *ngIf="loteFormContrls['metrosFondo'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Orientación</mat-label>
+        <mat-select formControlName="tipoOrientacion">
+          <mat-option *ngFor="let item of tiposOrientacionLote" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="loteFormContrls['tipoOrientacion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo de vendedor</mat-label>
+        <mat-select formControlName="tipoVendedor">
+          <mat-option *ngFor="let item of tiposVendedor" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="loteFormContrls['tipoVendedor'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Formalización de la venta</mat-label>
+        <mat-select formControlName="formalizacionVenta">
+          <mat-option
+            *ngFor="let item of tiposFormalizacionVenta"
+            [value]="item"
+          >
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="loteFormContrls['formalizacionVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Destino de uso</mat-label>
+        <mat-select formControlName="destinoUso">
+          <mat-option *ngFor="let item of destinosUso" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="loteFormContrls['destinoUso'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider class="my-3"></mat-divider>
+  <div class="row">
+    <div class="col-md-12">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Forma de pago - Elegir 1 o VARIAS formas de pago</mat-label>
+
+        <mat-chip-list
+          #chipList
+          formControlName="formaPagoChipList"
+          [multiple]="true"
+        >
+          <mat-chip
+            *ngFor="let item of allFormasPago"
+            #chip="matChip"
+            (click)="chip.toggleSelected(true)"
+            [selected]="item.selected"
+            [selectable]="true"
+            (selectionChange)="changeSelected($event, item)"
+          >
+            {{ item.value }}
+          </mat-chip>
+        </mat-chip-list>
+        <mat-error
+          *ngIf="loteFormContrls['formaPagoChipList'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider class="my-3"></mat-divider>
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Fecha de ingreso</mat-label>
+        <input
+          matInput
+          [matDatepicker]="pickerFechaIngreso"
+          [max]="maxDate"
+          formControlName="fechaIngreso"
+        />
+        <mat-hint>DD/MM/AAAA</mat-hint>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="pickerFechaIngreso"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          #pickerFechaIngreso
+          [startAt]="startDate"
+        ></mat-datepicker>
+        <mat-error *ngIf="loteFormContrls['fechaIngreso'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Precio Inicial Historico</mat-label>
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoPrecioHistorico"
+        />
+        <mat-slide-toggle matSuffix formControlName="precioInicialPeso"
+          >PESOS</mat-slide-toggle
+        >
+        <mat-hint
+          >El campo está en DOLAR, si necesita expresarlo en PESOS, marque el
+          botón</mat-hint
+        >
+        <mat-error
+          *ngIf="loteFormContrls['montoPrecioHistorico'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Último Precio Publicado</mat-label>
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoUltimoPrecio"
+        />
+        <mat-slide-toggle matSuffix formControlName="ultimoPrecioPeso"
+          >PESOS</mat-slide-toggle
+        >
+        <mat-hint
+          >El campo está en DOLAR, si necesita expresarlo en PESOS, marque el
+          botón</mat-hint
+        >
+        <mat-error
+          *ngIf="loteFormContrls['montoUltimoPrecio'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider class="my-3"></mat-divider>
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Fecha de venta</mat-label>
+        <input
+          matInput
+          [matDatepicker]="pickerFechaVenta"
+          [max]="maxDate"
+          formControlName="fechaVenta"
+        />
+        <mat-hint>DD/MM/AAAA</mat-hint>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="pickerFechaVenta"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          #pickerFechaVenta
+          [startAt]="startDate"
+        ></mat-datepicker>
+        <mat-error *ngIf="loteFormContrls['fechaVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field
+        class="full-width"
+        appearance="outline"
+        style="width: 100%"
+      >
+        <mat-label>Precio de venta</mat-label>
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoPrecioVenta"
+        />
+        <mat-slide-toggle matSuffix formControlName="precioVentaPeso"
+          >PESOS</mat-slide-toggle
+        >
+        <mat-hint
+          >El campo está en DOLAR, si necesita expresarlo en PESOS, porfavor
+          marque la opción</mat-hint
+        >
+        <mat-error
+          *ngIf="loteFormContrls['montoPrecioVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo de Captación</mat-label>
+        <mat-select formControlName="tipoCaptacion">
+          <mat-option *ngFor="let item of tiposCaptacion" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="loteFormContrls['tipoCaptacion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo de Venta</mat-label>
+        <mat-select formControlName="tipoVenta">
+          <mat-option *ngFor="let item of tiposVenta" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="loteFormContrls['tipoVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button
+        (click)="enviarForm()"
+        [disabled]="enviarEnable()"
+        mat-raised-button
+        class="float-end"
+        color="primary"
+      >
+        Enviar
+      </button>
+    </div>
+  </div>
+</form>

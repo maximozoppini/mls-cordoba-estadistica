@@ -27,4 +27,12 @@ export class MlsServiceService {
       departamento
     );
   }
+
+  public saveCasa(casa: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/casa`, casa);
+  }
+
+  public saveLote(lote: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/lote`, lote);
+  }
 }

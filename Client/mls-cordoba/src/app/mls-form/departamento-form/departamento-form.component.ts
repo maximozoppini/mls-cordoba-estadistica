@@ -86,7 +86,6 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public formasPago: SelecItem[] = [];
   public departamentoForm!: FormGroup;
   public startDate = new Date();
-  public defaultValue: any;
   public maxDate = moment();
 
   public destroy$ = new Subject<boolean>();
@@ -117,10 +116,15 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loading$.next(true);
+
     this.service
       .getBarrios()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((items) => (this.barrios = items));
+      .subscribe((items) => {
+        this.loading$.next(false);
+        this.barrios = items;
+      });
 
     this.departamentoForm = this.formBuilder.group({
       barrio: ['', [Validators.required]],
@@ -160,8 +164,6 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
       tipoCaptacion: ['', [Validators.required]],
       tipoVenta: ['', [Validators.required]],
     });
-
-    this.defaultValue = this.departamentoForm.value;
 
     this.filteredBarrios$ = this.departamentoForm.controls[
       'barrio'
@@ -245,7 +247,6 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
     } else {
       this.formasPago = this.formasPago.filter((x) => x.id !== item.id);
     }
-    console.log(this.formasPago);
     item.selected = $event.selected;
   }
 

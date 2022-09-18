@@ -1,1 +1,623 @@
-<p>casa-form works!</p>
+<ng-container *ngIf="loading$ | async">
+  <div class="overlay"></div>
+  <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
+</ng-container>
+
+<h1>Formulario para el alta de una Casa - PH - Duplex</h1>
+
+<form #form="ngForm" [formGroup]="casaForm" class="form">
+  <div class="row">
+    <div class="col-md-6">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Barrio</mat-label>
+        <input
+          type="text"
+          placeholder="Seleccionar un barrio"
+          matInput
+          id="barrio"
+          [matAutocomplete]="barrioAuto"
+          formControlName="barrio"
+        />
+        <mat-error *ngIf="casaFormContrls['barrio'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+        <mat-autocomplete
+          #barrioAuto="matAutocomplete"
+          [displayWith]="displayBarrioFn"
+        >
+          <mat-option
+            *ngFor="let barrio of filteredBarrios$ | async"
+            [value]="barrio"
+          >
+            {{ barrio.value }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Calle</mat-label>
+        <input
+          matInput
+          formControlName="calle"
+          placeholder="Ingrese la calle unicamente"
+        />
+        <mat-error *ngIf="casaFormContrls['calle'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+        <mat-hint>No agregue numero, ni ciudad. SOLO CALLE</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Altura aprox</mat-label>
+        <input
+          matInput
+          min="0"
+          type="number"
+          formControlName="altura"
+          placeholder="Ingrese la altura aprox"
+        />
+        <mat-error *ngIf="casaFormContrls['altura'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+        <mat-hint>No ingrese la altura exacta</mat-hint>
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider class="my-3"></mat-divider>
+  <div class="row">
+    <div class="col-md-2" style="padding-left: 0px; padding-right: 0px">
+      <mat-slide-toggle formControlName="esHousing" style="padding-top: 12px"
+        >Esta en housing?</mat-slide-toggle
+      >
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Nombre Housing</mat-label>
+        <input matInput formControlName="nomHousing" />
+        <mat-error *ngIf="casaFormContrls['nomHousing'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Ubicación dentro del barrio</mat-label>
+        <mat-select formControlName="tipoUbicacion">
+          <mat-option *ngFor="let item of tiposUbicacionBarrio" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['tipoUbicacion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo de propiedad</mat-label>
+        <mat-select formControlName="tipoPropiedad">
+          <mat-option *ngFor="let item of tiposPropiedad" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['tipoPropiedad'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Forma del lote</mat-label>
+        <mat-select formControlName="tipoFormaLote">
+          <mat-option *ngFor="let item of tiposFormaLote" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['tipoFormaLote'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo del lote</mat-label>
+        <mat-select formControlName="tipoLote">
+          <mat-option *ngFor="let item of tiposLote" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['tipoLote'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Superficie terreno</mat-label>
+
+        <input matInput min="0" type="number" formControlName="supTerreno" />
+        <mat-error *ngIf="casaFormContrls['supTerreno'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Metros de frente</mat-label>
+
+        <input matInput min="0" type="number" formControlName="metrosFrente" />
+        <mat-error *ngIf="casaFormContrls['metrosFrente'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Metros de fondo</mat-label>
+
+        <input matInput min="0" type="number" formControlName="metrosFondo" />
+        <mat-error *ngIf="casaFormContrls['metrosFondo'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Orientación</mat-label>
+        <mat-select formControlName="tipoOrientacion">
+          <mat-option *ngFor="let item of tiposOrientacionLote" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="casaFormContrls['tipoOrientacion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Metros Cubiertos</mat-label>
+
+        <input
+          matInput
+          min="0"
+          type="number"
+          formControlName="metrosCubiertos"
+        />
+        <mat-error
+          *ngIf="casaFormContrls['metrosCubiertos'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Metros Semi y/o Descubiertos</mat-label>
+
+        <input
+          matInput
+          min="0"
+          type="number"
+          formControlName="metrosDescubiertos"
+        />
+        <mat-error
+          *ngIf="casaFormContrls['metrosDescubiertos'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Dormitorios</mat-label>
+        <mat-select formControlName="dormitorios">
+          <mat-option *ngFor="let item of dormitorios" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['dormitorios'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Baño</mat-label>
+        <mat-select formControlName="banios">
+          <mat-option *ngFor="let item of banios" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['banios'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Baño social</mat-label>
+        <mat-select formControlName="banioSocial">
+          <mat-option *ngFor="let item of baniosSociales" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['banioSocial'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Cochera o Garaje</mat-label>
+        <mat-select formControlName="tipoCochera">
+          <mat-option *ngFor="let item of tiposCochera" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['tipoCochera'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Cantidad de plazas</mat-label>
+        <mat-select formControlName="cantCochera">
+          <mat-option *ngFor="let item of tiposCantidadCochera" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['cantCochera'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-6">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Extras</mat-label>
+        <mat-chip-list
+          #chipListExtras
+          formControlName="extrasChipList"
+          aria-label="extras selection"
+        >
+          <mat-chip *ngFor="let extra of extras" (removed)="removeExtra(extra)">
+            {{ extra.value }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+          <input
+            placeholder="Agregar..."
+            #extraInput
+            formControlName="extras"
+            [matAutocomplete]="extrasAuto"
+            [matChipInputFor]="chipListExtras"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          />
+        </mat-chip-list>
+        <mat-autocomplete
+          #extrasAuto="matAutocomplete"
+          (optionSelected)="selectedExtras($event)"
+        >
+          <mat-option
+            *ngFor="let extra of filteredExtras$ | async"
+            [value]="extra"
+          >
+            {{ extra.value }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error>Campo requerido</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="categoria">
+          <mat-option *ngFor="let item of categorias" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['categoria'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Antigüedad</mat-label>
+        <mat-select formControlName="antiguedad">
+          <mat-option *ngFor="let item of antiguedades" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['antiguedad'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Cantidad de años</mat-label>
+        <input
+          matInput
+          min="0"
+          type="number"
+          formControlName="antiguedadAnios"
+        />
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Estado de conservación</mat-label>
+        <mat-select formControlName="estadoConservacion">
+          <mat-option *ngFor="let item of estadosConservacion" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="casaFormContrls['estadoConservacion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Estado de Ocupación</mat-label>
+        <mat-select formControlName="estadoOcupacion">
+          <mat-option *ngFor="let item of estadosOcupacion" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="casaFormContrls['estadoOcupacion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo de vendedor</mat-label>
+        <mat-select formControlName="tipoVendedor">
+          <mat-option *ngFor="let item of tiposVendedor" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['tipoVendedor'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Formalización de la venta</mat-label>
+        <mat-select formControlName="formalizacionVenta">
+          <mat-option
+            *ngFor="let item of tiposFormalizacionVenta"
+            [value]="item"
+          >
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="casaFormContrls['formalizacionVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Destino de uso</mat-label>
+        <mat-select formControlName="destinoUso">
+          <mat-option *ngFor="let item of destinosUso" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['destinoUso'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider class="my-3"></mat-divider>
+  <div class="row">
+    <div class="col-md-12">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Forma de pago - Elegir 1 o VARIAS formas de pago</mat-label>
+
+        <mat-chip-list
+          #chipList
+          formControlName="formaPagoChipList"
+          [multiple]="true"
+        >
+          <mat-chip
+            *ngFor="let item of allFormasPago"
+            #chip="matChip"
+            (click)="chip.toggleSelected(true)"
+            [selected]="item.selected"
+            [selectable]="true"
+            (selectionChange)="changeSelected($event, item)"
+          >
+            {{ item.value }}
+          </mat-chip>
+        </mat-chip-list>
+        <mat-error
+          *ngIf="casaFormContrls['formaPagoChipList'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider class="my-3"></mat-divider>
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Fecha de ingreso</mat-label>
+        <input
+          matInput
+          [matDatepicker]="pickerFechaIngreso"
+          [max]="maxDate"
+          formControlName="fechaIngreso"
+        />
+        <mat-hint>DD/MM/AAAA</mat-hint>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="pickerFechaIngreso"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          #pickerFechaIngreso
+          [startAt]="startDate"
+        ></mat-datepicker>
+        <mat-error *ngIf="casaFormContrls['fechaIngreso'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Precio Inicial Historico</mat-label>
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoPrecioHistorico"
+        />
+        <mat-slide-toggle matSuffix formControlName="precioInicialPeso"
+          >PESOS</mat-slide-toggle
+        >
+        <mat-hint
+          >El campo está en DOLAR, si necesita expresarlo en PESOS, marque el
+          botón</mat-hint
+        >
+        <mat-error
+          *ngIf="casaFormContrls['montoPrecioHistorico'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Último Precio Publicado</mat-label>
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoUltimoPrecio"
+        />
+        <mat-slide-toggle matSuffix formControlName="ultimoPrecioPeso"
+          >PESOS</mat-slide-toggle
+        >
+        <mat-hint
+          >El campo está en DOLAR, si necesita expresarlo en PESOS, marque el
+          botón</mat-hint
+        >
+        <mat-error
+          *ngIf="casaFormContrls['montoUltimoPrecio'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-divider class="my-3"></mat-divider>
+  <div class="row">
+    <div class="col-md-2">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Fecha de venta</mat-label>
+        <input
+          matInput
+          [matDatepicker]="pickerFechaVenta"
+          [max]="maxDate"
+          formControlName="fechaVenta"
+        />
+        <mat-hint>DD/MM/AAAA</mat-hint>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="pickerFechaVenta"
+        ></mat-datepicker-toggle>
+        <mat-datepicker
+          #pickerFechaVenta
+          [startAt]="startDate"
+        ></mat-datepicker>
+        <mat-error *ngIf="casaFormContrls['fechaVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field
+        class="full-width"
+        appearance="outline"
+        style="width: 100%"
+      >
+        <mat-label>Precio de venta</mat-label>
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoPrecioVenta"
+        />
+        <mat-slide-toggle matSuffix formControlName="precioVentaPeso"
+          >PESOS</mat-slide-toggle
+        >
+        <mat-hint
+          >El campo está en DOLAR, si necesita expresarlo en PESOS, porfavor
+          marque la opción</mat-hint
+        >
+        <mat-error
+          *ngIf="casaFormContrls['montoPrecioVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo de Captación</mat-label>
+        <mat-select formControlName="tipoCaptacion">
+          <mat-option *ngFor="let item of tiposCaptacion" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['tipoCaptacion'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Tipo de Venta</mat-label>
+        <mat-select formControlName="tipoVenta">
+          <mat-option *ngFor="let item of tiposVenta" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="casaFormContrls['tipoVenta'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button
+        (click)="enviarForm()"
+        [disabled]="enviarEnable()"
+        mat-raised-button
+        class="float-end"
+        color="primary"
+      >
+        Enviar
+      </button>
+    </div>
+  </div>
+</form>
