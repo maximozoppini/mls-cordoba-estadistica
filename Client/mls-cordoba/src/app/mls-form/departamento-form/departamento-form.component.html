@@ -395,6 +395,7 @@
         <input
           matInput
           [matDatepicker]="pickerFechaIngreso"
+          [max]="maxDate"
           formControlName="fechaIngreso"
         />
         <mat-hint>DD/MM/AAAA</mat-hint>
@@ -414,7 +415,12 @@
     <div class="col-md-4">
       <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>Precio Inicial Historico</mat-label>
-        <input matInput currencyMask formControlName="montoPrecioHistorico" />
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoPrecioHistorico"
+        />
         <mat-slide-toggle matSuffix formControlName="precioInicialPeso"
           >PESOS</mat-slide-toggle
         >
@@ -431,7 +437,12 @@
     <div class="col-md-4">
       <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>Último Precio Publicado</mat-label>
-        <input matInput currencyMask formControlName="montoUltimoPrecio" />
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoUltimoPrecio"
+        />
         <mat-slide-toggle matSuffix formControlName="ultimoPrecioPeso"
           >PESOS</mat-slide-toggle
         >
@@ -454,6 +465,7 @@
         <input
           matInput
           [matDatepicker]="pickerFechaVenta"
+          [max]="maxDate"
           formControlName="fechaVenta"
         />
         <mat-hint>DD/MM/AAAA</mat-hint>
@@ -477,7 +489,12 @@
         style="width: 100%"
       >
         <mat-label>Precio de venta</mat-label>
-        <input matInput currencyMask formControlName="montoPrecioVenta" />
+        <input
+          matInput
+          type="number"
+          min="0"
+          formControlName="montoPrecioVenta"
+        />
         <mat-slide-toggle matSuffix formControlName="precioVentaPeso"
           >PESOS</mat-slide-toggle
         >

@@ -50,6 +50,8 @@ import { tiposCaptacion } from '../models/tiposCaptacion';
 import { MatChipList } from '@angular/material/chips';
 import * as moment from 'moment';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'app-departamento-form',
@@ -66,7 +68,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public dormitorios = tiposDormitorios;
   public banios = numerosBanios;
   public baniosSociales = numerosBanioSocial;
-  public todosLosExtras = tiposExtras;
+  public todosLosExtras = cloneDeep(tiposExtras);
   public tiposCochera = tiposCochera;
   public categorias = tiposCategoria;
   public antiguedades = tiposAntiguedad;
@@ -75,7 +77,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public tiposVendedor = tiposVendedor;
   public tiposFormalizacionVenta = tiposFormalizacionVenta;
   public destinosUso = tiposDestinoUso;
-  public allFormasPago = formasPago;
+  public allFormasPago = cloneDeep(formasPago);
   public tiposVenta = tiposVenta;
   public tiposCaptacion = tiposCaptacion;
 
@@ -85,6 +87,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public departamentoForm!: FormGroup;
   public startDate = new Date();
   public defaultValue: any;
+  public maxDate = moment();
 
   public destroy$ = new Subject<boolean>();
   public loading$ = new BehaviorSubject<boolean>(false);
@@ -104,7 +107,8 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   constructor(
     private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
-    private service: MlsServiceService
+    private service: MlsServiceService,
+    private router: Router
   ) {}
 
   ngOnDestroy(): void {
@@ -287,6 +291,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
             'Se pudo registrar exitosamente el departamento',
             'salir'
           );
+          this.router.navigateByUrl('/home');
         },
         error: (err) => {
           this.loading$.next(false);
