@@ -203,14 +203,14 @@ export class LoteFormComponent implements OnInit, OnDestroy {
   }
 
   enviarForm(): void {
-    let casa = this.loteForm.value;
-    casa.fechaIngresoTexto = casa.fechaIngreso.format('YYYY-MM-DD');
-    casa.fechaVentaTexto = casa.fechaVenta.format('YYYY-MM-DD');
-    casa.formasPagoChipList = this.formasPago.map((x: any) => x.id);
+    let lote = this.loteForm.value;
+    lote.fechaIngresoTexto = lote.fechaIngreso.format('YYYY-MM-DD');
+    lote.fechaVentaTexto = lote.fechaVenta.format('YYYY-MM-DD');
+    lote.formasPagoChipList = this.formasPago.map((x: any) => x.id);
 
     this.loading$.next(true);
     this.service
-      .saveLote(casa)
+      .saveLote(lote)
       .pipe(take(1))
       .subscribe({
         next: (data) => {
@@ -218,12 +218,12 @@ export class LoteFormComponent implements OnInit, OnDestroy {
           this.loteForm.reset();
           this.form.resetForm();
           this.loading$.next(false);
-          this.snackBar.open('Se pudo registrar exitosamente la casa', 'salir');
+          this.snackBar.open('Se pudo registrar exitosamente el lote', 'salir');
           this.router.navigateByUrl('/home');
         },
         error: (err) => {
           this.loading$.next(false);
-          this.snackBar.open('NO SE pudo registrar la casa', 'salir');
+          this.snackBar.open('NO SE pudo registrar el lote', 'salir');
           console.log(err);
         },
       });
