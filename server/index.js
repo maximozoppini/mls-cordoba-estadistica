@@ -202,7 +202,9 @@ app.post("/api/casa", (req, res) => {
                     Baños: req.body.banios.id,
                     "Baño Social": req.body.banioSocial.id,
                     "Posee Cochera o Garaje?": req.body.tipoCochera.id,
-                    "Cantidad de plazas": req.body.cantCochera?.id ?? "",
+                    "Cantidad de plazas": req.body.cantCochera
+                        ? req.body.cantCochera.id
+                        : null,
                     Extras: req.body.extras,
                     Antigüedad: req.body.antiguedad.id,
                     "Cantidad de años": req.body.antiguedadAnios,

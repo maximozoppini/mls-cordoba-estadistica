@@ -288,15 +288,12 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
           this.departamentoForm.reset();
           this.form.resetForm();
           this.loading$.next(false);
-          this.snackBar.open(
-            'Se pudo registrar exitosamente el departamento',
-            'salir'
-          );
+          this.snackBar.open('Se pudo registrar exitosamente el departamento');
           this.router.navigateByUrl('/home');
         },
         error: (err) => {
           this.loading$.next(false);
-          this.snackBar.open('NO SE pudo registrar  el departamento', 'salir');
+          this.snackBar.open('NO SE pudo registrar  el departamento');
           console.log(err);
         },
       });

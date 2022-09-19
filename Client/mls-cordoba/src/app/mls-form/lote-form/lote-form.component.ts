@@ -218,12 +218,12 @@ export class LoteFormComponent implements OnInit, OnDestroy {
           this.loteForm.reset();
           this.form.resetForm();
           this.loading$.next(false);
-          this.snackBar.open('Se pudo registrar exitosamente el lote', 'salir');
+          this.snackBar.open('Se pudo registrar exitosamente el lote');
           this.router.navigateByUrl('/home');
         },
         error: (err) => {
           this.loading$.next(false);
-          this.snackBar.open('NO SE pudo registrar el lote', 'salir');
+          this.snackBar.open('NO SE pudo registrar el lote');
           console.log(err);
         },
       });

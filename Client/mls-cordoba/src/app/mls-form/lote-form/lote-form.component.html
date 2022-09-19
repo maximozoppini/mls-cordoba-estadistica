@@ -45,7 +45,13 @@
         <mat-error *ngIf="loteFormContrls['calle'].hasError('required')"
           >Campo requerido</mat-error
         >
-        <mat-hint>No agregue numero, ni ciudad. SOLO CALLE</mat-hint>
+        <mat-hint
+          >No agregue numero, ni ciudad. SOLO CALLE. (<a
+            target="_blank"
+            href="https://maps.google.com"
+            >google maps</a
+          >)</mat-hint
+        >
       </mat-form-field>
     </div>
     <div class="col-md-2">
@@ -282,12 +288,7 @@
     <div class="col-md-4">
       <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>Precio Inicial Historico</mat-label>
-        <input
-          matInput
-          type="number"
-          min="0"
-          formControlName="montoPrecioHistorico"
-        />
+        <input matInput currencyMask formControlName="montoPrecioHistorico" />
         <mat-slide-toggle matSuffix formControlName="precioInicialPeso"
           >PESOS</mat-slide-toggle
         >
@@ -304,12 +305,7 @@
     <div class="col-md-4">
       <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>Último Precio Publicado</mat-label>
-        <input
-          matInput
-          type="number"
-          min="0"
-          formControlName="montoUltimoPrecio"
-        />
+        <input matInput currencyMask formControlName="montoUltimoPrecio" />
         <mat-slide-toggle matSuffix formControlName="ultimoPrecioPeso"
           >PESOS</mat-slide-toggle
         >
@@ -356,12 +352,7 @@
         style="width: 100%"
       >
         <mat-label>Precio de venta</mat-label>
-        <input
-          matInput
-          type="number"
-          min="0"
-          formControlName="montoPrecioVenta"
-        />
+        <input matInput currencyMask formControlName="montoPrecioVenta" />
         <mat-slide-toggle matSuffix formControlName="precioVentaPeso"
           >PESOS</mat-slide-toggle
         >

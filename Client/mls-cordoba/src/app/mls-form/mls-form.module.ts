@@ -28,7 +28,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  MatSnackBarModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+} from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   CurrencyMaskConfig,
@@ -40,7 +43,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'left',
   allowNegative: false,
   decimal: ',',
-  precision: 2,
+  precision: 0,
   prefix: '$ ',
   suffix: '',
   thousands: '.',
@@ -93,6 +96,14 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { strict: true } },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig },
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {
+        duration: 4000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      },
+    },
   ],
 })
 export class MlsFormModule {}

@@ -9,12 +9,18 @@ import {
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { cloneDeep } from 'lodash';
 import * as moment from 'moment';
 import {
   BehaviorSubject,
+  combineLatest,
+  combineLatestWith,
   debounceTime,
   filter,
   map,
@@ -235,6 +241,26 @@ export class CasaFormComponent implements OnInit, OnDestroy {
         }
       });
 
+    this.casaForm.controls['metrosFrente'].valueChanges
+      .pipe(
+        combineLatestWith(this.casaForm.controls['metrosFondo'].valueChanges),
+        takeUntil(this.destroy$),
+        debounceTime(300)
+      )
+      .subscribe(([metrosFrente, metrosFondo]) => {
+        let sup = this.casaForm.get('supTerreno')?.value;
+        if (sup) {
+          if (metrosFrente * metrosFondo > sup * 1.1) {
+            this.casaForm.controls['metrosFrente'].setErrors({
+              tamanioIncorrecto: true,
+            });
+            this.casaForm.controls['metrosFondo'].setErrors({
+              tamanioIncorrecto: true,
+            });
+          }
+        }
+      });
+
     this.casaForm.controls['tipoCochera'].valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((selection) => {
@@ -339,12 +365,12 @@ export class CasaFormComponent implements OnInit, OnDestroy {
           this.casaForm.reset();
           this.form.resetForm();
           this.loading$.next(false);
-          this.snackBar.open('Se pudo registrar exitosamente la casa', 'salir');
+          this.snackBar.open('Se pudo registrar exitosamente la casa');
           this.router.navigateByUrl('/home');
         },
         error: (err) => {
           this.loading$.next(false);
-          this.snackBar.open('NO SE pudo registrar la casa', 'salir');
+          this.snackBar.open('NO SE pudo registrar la casa');
           console.log(err);
         },
       });
