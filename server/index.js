@@ -88,7 +88,16 @@ app.get("/api/barrios", (req, res) => {
     mongoClient.connect(process.env.mg_db_uri, function (err, db) {
         var dbo = db.db("mlsCordobaMongo");
         dbo.collection("barrios")
-            .find({}, { projection: { _id: 1, Identificador: 1 } })
+            .find(
+                {},
+                {
+                    projection: {
+                        _id: 1,
+                        Identificador: 1,
+                        "Tipo de barrio": 1,
+                    },
+                }
+            )
             .toArray((err, result) => {
                 if (err) {
                     throw err;

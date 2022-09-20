@@ -29,6 +29,7 @@ import {
   Subject,
   take,
   takeUntil,
+  tap,
 } from 'rxjs';
 import { MlsServiceService } from '../mls-service.service';
 import { estadosOcupacion } from '../models/estadosOcupacion';
@@ -138,7 +139,7 @@ export class CasaFormComponent implements OnInit, OnDestroy {
       altura: ['', [Validators.required]],
       esHousing: [false],
       nomHousing: [{ value: '', disabled: true }],
-      tipoUbicacion: ['', [Validators.required]],
+      tipoUbicacion: [{ value: '', disabled: true }],
       tipoPropiedad: ['', [Validators.required]],
       tipoFormaLote: ['', [Validators.required]],
       tipoLote: ['', [Validators.required]],
@@ -180,6 +181,23 @@ export class CasaFormComponent implements OnInit, OnDestroy {
 
     this.filteredBarrios$ = this.casaForm.controls['barrio'].valueChanges.pipe(
       debounceTime(500),
+      tap((value) => {
+        if (typeof value === 'object') {
+          if (
+            value.tipoBarrio === 'Poblacion' ||
+            value.tipoBarrio === 'Abierto'
+          ) {
+            this.casaForm.controls['tipoUbicacion'].disable();
+            this.casaForm.controls['tipoUbicacion'].setValue('');
+            this.casaForm.controls['tipoUbicacion'].clearValidators();
+          } else {
+            this.casaForm.controls['tipoUbicacion'].enable();
+            this.casaForm.controls['tipoUbicacion'].addValidators(
+              Validators.required
+            );
+          }
+        }
+      }),
       filter((value) => typeof value !== 'object'),
       map((searchValue) => {
         return this.barrios.filter((x) =>
@@ -187,6 +205,7 @@ export class CasaFormComponent implements OnInit, OnDestroy {
         );
       })
     );
+
     this.filteredExtras$ = this.creacionPipes('extras', this.todosLosExtras);
 
     this.casaForm.controls['extrasChipList'].statusChanges
@@ -252,11 +271,14 @@ export class CasaFormComponent implements OnInit, OnDestroy {
         if (sup) {
           if (metrosFrente * metrosFondo > sup * 1.1) {
             this.casaForm.controls['metrosFrente'].setErrors({
-              tamanioIncorrecto: true,
+              tamanioIncorrecto: metrosFrente * metrosFondo > sup * 1.1,
             });
             this.casaForm.controls['metrosFondo'].setErrors({
-              tamanioIncorrecto: true,
+              tamanioIncorrecto: metrosFrente * metrosFondo > sup * 1.1,
             });
+          } else {
+            this.casaForm.controls['metrosFondo'].updateValueAndValidity();
+            this.casaForm.controls['metrosFrente'].updateValueAndValidity();
           }
         }
       });

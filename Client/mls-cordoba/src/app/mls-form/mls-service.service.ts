@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { SelecItem } from './models/selectItem';
 import { environment } from './../../environments/environment';
+import { Barrio } from './models/barrios';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +11,14 @@ import { environment } from './../../environments/environment';
 export class MlsServiceService {
   constructor(private http: HttpClient) {}
 
-  public getBarrios(): Observable<SelecItem[]> {
+  public getBarrios(): Observable<Barrio[]> {
     return this.http.get<any>(`${environment.apiUrl}/barrios`).pipe(
       map((data) => {
+        console.log(data);
         return data.map((item: any) => ({
           id: item._id,
           value: item.Identificador,
+          tipoBarrio: item['Tipo de barrio'],
         }));
       })
     );

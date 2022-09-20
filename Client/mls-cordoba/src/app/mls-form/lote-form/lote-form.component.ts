@@ -14,6 +14,7 @@ import { cloneDeep } from 'lodash';
 import * as moment from 'moment';
 import {
   BehaviorSubject,
+  combineLatestWith,
   debounceTime,
   filter,
   map,
@@ -21,6 +22,7 @@ import {
   Subject,
   take,
   takeUntil,
+  tap,
 } from 'rxjs';
 import { MlsServiceService } from '../mls-service.service';
 import { formasPago } from '../models/formasPago';
@@ -103,12 +105,12 @@ export class LoteFormComponent implements OnInit, OnDestroy {
       altura: ['', [Validators.required]],
       esHousing: [false],
       nomHousing: [{ value: '', disabled: true }],
-      tipoUbicacion: ['', [Validators.required]],
+      tipoUbicacion: [{ value: '', disabled: true }],
       tipoFormaLote: ['', [Validators.required]],
       tipoLote: ['', [Validators.required]],
       supTerreno: ['', [Validators.required]],
-      metrosFrente: [{ value: 0, disabled: true }],
-      metrosFondo: [{ value: 0, disabled: true }],
+      metrosFrente: [{ value: '', disabled: true }],
+      metrosFondo: [{ value: '', disabled: true }],
       tipoOrientacion: ['', [Validators.required]],
       usoSuelo: ['', [Validators.required]],
 
@@ -130,6 +132,23 @@ export class LoteFormComponent implements OnInit, OnDestroy {
 
     this.filteredBarrios$ = this.loteForm.controls['barrio'].valueChanges.pipe(
       debounceTime(500),
+      tap((value) => {
+        if (typeof value === 'object') {
+          if (
+            value.tipoBarrio === 'Poblacion' ||
+            value.tipoBarrio === 'Abierto'
+          ) {
+            this.loteForm.controls['tipoUbicacion'].disable();
+            this.loteForm.controls['tipoUbicacion'].setValue('');
+            this.loteForm.controls['tipoUbicacion'].clearValidators();
+          } else {
+            this.loteForm.controls['tipoUbicacion'].enable();
+            this.loteForm.controls['tipoUbicacion'].addValidators(
+              Validators.required
+            );
+          }
+        }
+      }),
       filter((value) => typeof value !== 'object'),
       map((searchValue) => {
         return this.barrios.filter((x) =>
@@ -152,6 +171,29 @@ export class LoteFormComponent implements OnInit, OnDestroy {
           this.loteForm.controls['nomHousing'].removeValidators(
             Validators.required
           );
+        }
+      });
+
+    this.loteForm.controls['metrosFrente'].valueChanges
+      .pipe(
+        combineLatestWith(this.loteForm.controls['metrosFondo'].valueChanges),
+        takeUntil(this.destroy$),
+        debounceTime(300)
+      )
+      .subscribe(([metrosFrente, metrosFondo]) => {
+        let sup = this.loteForm.get('supTerreno')?.value;
+        if (sup) {
+          if (metrosFrente * metrosFondo > sup * 1.1) {
+            this.loteForm.controls['metrosFrente'].setErrors({
+              tamanioIncorrecto: metrosFrente * metrosFondo > sup * 1.1,
+            });
+            this.loteForm.controls['metrosFondo'].setErrors({
+              tamanioIncorrecto: metrosFrente * metrosFondo > sup * 1.1,
+            });
+          } else {
+            this.loteForm.controls['metrosFondo'].updateValueAndValidity();
+            this.loteForm.controls['metrosFrente'].updateValueAndValidity();
+          }
         }
       });
 
