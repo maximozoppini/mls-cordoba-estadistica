@@ -109,7 +109,7 @@ app.get("/api/barrios", (req, res) => {
 });
 
 app.post("/api/departamento", (req, res) => {
-    console.log(req.body);
+    
     const base = require("airtable").base("appAPeVcmiZuk0Kl2");
     base("Departamentos").create(
         [
