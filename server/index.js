@@ -23,6 +23,7 @@ app.post("/updateBarrios", (req, res) => {
   const mongoClient = mongo.MongoClient;
   let barrios = [];
   console.log(barrios);
+  console.log(barrios);
   const base = require("airtable").base(req.query.base);
   base("Barrios")
     .select({
