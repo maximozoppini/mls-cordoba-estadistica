@@ -49,7 +49,9 @@ export class LoteFormComponent implements OnInit, OnDestroy {
   public tiposVendedor = [
     ...tiposVendedor.filter((x) => x.id !== 'Constructor'),
   ];
-  public tiposFormalizacionVenta = tiposFormalizacionVenta;
+  public tiposFormalizacionVenta = tiposFormalizacionVenta.filter(
+    (x) => x.value != 'Solo Boleto'
+  );
   public destinosUso = tiposDestinoUso;
   public allFormasPago = cloneDeep(formasPago);
   public tiposVenta = tiposVenta;
@@ -65,6 +67,9 @@ export class LoteFormComponent implements OnInit, OnDestroy {
   public loteForm!: FormGroup;
   public startDate = new Date();
   public maxDate = moment();
+
+  public lblCalle: string = 'Calle';
+  public hintCalle: string = 'No agregue numero, ni ciudad. SOLO CALLE';
 
   public destroy$ = new Subject<boolean>();
   public loading$ = new BehaviorSubject<boolean>(false);
@@ -102,7 +107,7 @@ export class LoteFormComponent implements OnInit, OnDestroy {
     this.loteForm = this.formBuilder.group({
       barrio: ['', [Validators.required]],
       calle: ['', [Validators.required]],
-      altura: ['', [Validators.required]],
+      altura: [''],
       esHousing: [false],
       nomHousing: [{ value: '', disabled: true }],
       tipoUbicacion: [{ value: '', disabled: true }],
@@ -141,11 +146,16 @@ export class LoteFormComponent implements OnInit, OnDestroy {
             this.loteForm.controls['tipoUbicacion'].disable();
             this.loteForm.controls['tipoUbicacion'].setValue('');
             this.loteForm.controls['tipoUbicacion'].clearValidators();
+            this.lblCalle = 'Calle';
+            this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
           } else {
             this.loteForm.controls['tipoUbicacion'].enable();
             this.loteForm.controls['tipoUbicacion'].addValidators(
               Validators.required
             );
+            this.lblCalle = 'Calle o Manzana';
+            this.hintCalle =
+              'No agregue Numero, Ciudad, Barrio, ni Código Postal';
           }
         }
       }),

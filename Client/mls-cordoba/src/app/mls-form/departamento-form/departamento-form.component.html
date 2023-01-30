@@ -41,7 +41,7 @@
     </div>
     <div class="col-md-4">
       <mat-form-field class="full-width" appearance="outline">
-        <mat-label>Calle</mat-label>
+        <mat-label>{{ lblCalle }}</mat-label>
         <input
           matInput
           formControlName="calle"
@@ -51,9 +51,7 @@
           >Campo requerido</mat-error
         >
         <mat-hint
-          >No agregue numero, ni ciudad. SOLO CALLE. (<a
-            target="_blank"
-            href="https://maps.google.com"
+          >{{ hintCalle }}. (<a target="_blank" href="https://maps.google.com"
             >google maps</a
           >)</mat-hint
         >
@@ -61,7 +59,7 @@
     </div>
     <div class="col-md-2">
       <mat-form-field class="full-width" appearance="outline">
-        <mat-label>Altura aprox</mat-label>
+        <mat-label>Altura o Lote</mat-label>
         <input
           matInput
           min="0"
@@ -69,10 +67,10 @@
           formControlName="altura"
           placeholder="Ingrese la altura aprox"
         />
-        <mat-error *ngIf="deptoFormContrls['altura'].hasError('required')"
+        <!-- <mat-error *ngIf="casaFormContrls['altura'].hasError('required')"
           >Campo requerido</mat-error
         >
-        <mat-hint>No ingrese la altura exacta</mat-hint>
+        <mat-hint>No ingrese la altura exacta</mat-hint> -->
       </mat-form-field>
     </div>
   </div>
@@ -427,12 +425,12 @@
       <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>Precio Inicial Historico</mat-label>
         <input matInput currencyMask formControlName="montoPrecioHistorico" />
-        <mat-slide-toggle matSuffix formControlName="precioInicialPeso"
+        <!-- <mat-slide-toggle matSuffix formControlName="precioInicialPeso"
           >PESOS</mat-slide-toggle
-        >
+        > -->
         <mat-hint
-          >El campo está en DOLAR, si necesita expresarlo en PESOS, marque el
-          botón</mat-hint
+          >Si hizo Venta en pesos, Cargue el importe en Dolares a Cotización
+          Dólar Billete</mat-hint
         >
         <mat-error
           *ngIf="deptoFormContrls['montoPrecioHistorico'].hasError('required')"
@@ -444,12 +442,12 @@
       <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>Último Precio Publicado</mat-label>
         <input matInput currencyMask formControlName="montoUltimoPrecio" />
-        <mat-slide-toggle matSuffix formControlName="ultimoPrecioPeso"
+        <!-- <mat-slide-toggle matSuffix formControlName="ultimoPrecioPeso"
           >PESOS</mat-slide-toggle
-        >
+        > -->
         <mat-hint
-          >El campo está en DOLAR, si necesita expresarlo en PESOS, marque el
-          botón</mat-hint
+          >Si hizo Venta en pesos, Cargue el importe en Dolares a Cotización
+          Dólar Billete</mat-hint
         >
         <mat-error
           *ngIf="deptoFormContrls['montoUltimoPrecio'].hasError('required')"
@@ -491,12 +489,12 @@
       >
         <mat-label>Precio de venta</mat-label>
         <input matInput currencyMask formControlName="montoPrecioVenta" />
-        <mat-slide-toggle matSuffix formControlName="precioVentaPeso"
+        <!-- <mat-slide-toggle matSuffix formControlName="precioVentaPeso"
           >PESOS</mat-slide-toggle
-        >
+        > -->
         <mat-hint
-          >El campo está en DOLAR, si necesita expresarlo en PESOS, porfavor
-          marque la opción</mat-hint
+          >Si hizo Venta en pesos, Cargue el importe en Dolares a Cotización
+          Dólar Billete</mat-hint
         >
         <mat-error
           *ngIf="deptoFormContrls['montoPrecioVenta'].hasError('required')"

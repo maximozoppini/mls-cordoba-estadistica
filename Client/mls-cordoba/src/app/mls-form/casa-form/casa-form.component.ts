@@ -77,7 +77,9 @@ export class CasaFormComponent implements OnInit, OnDestroy {
   public estadosConservacion = tiposEstadosConservacion;
   public estadosOcupacion = estadosOcupacion;
   public tiposVendedor = tiposVendedor;
-  public tiposFormalizacionVenta = tiposFormalizacionVenta;
+  public tiposFormalizacionVenta = tiposFormalizacionVenta.filter(
+    (x) => x.value != 'Solo Boleto'
+  );
   public destinosUso = tiposDestinoUso;
   public allFormasPago = cloneDeep(formasPago);
   public tiposVenta = tiposVenta;
@@ -87,6 +89,9 @@ export class CasaFormComponent implements OnInit, OnDestroy {
   public tiposFormaLote = tiposFormasLote;
   public tiposLote = tiposLote;
   public tiposOrientacionLote = tipoOrientacionLote;
+
+  public lblCalle: string = 'Calle';
+  public hintCalle: string = 'No agregue numero, ni ciudad. SOLO CALLE';
 
   public barrios: SelecItem[] = [];
   public extras: SelecItem[] = [];
@@ -136,7 +141,7 @@ export class CasaFormComponent implements OnInit, OnDestroy {
     this.casaForm = this.formBuilder.group({
       barrio: ['', [Validators.required]],
       calle: ['', [Validators.required]],
-      altura: ['', [Validators.required]],
+      altura: [''],
       esHousing: [false],
       nomHousing: [{ value: '', disabled: true }],
       tipoUbicacion: [{ value: '', disabled: true }],
@@ -190,11 +195,17 @@ export class CasaFormComponent implements OnInit, OnDestroy {
             this.casaForm.controls['tipoUbicacion'].disable();
             this.casaForm.controls['tipoUbicacion'].setValue('');
             this.casaForm.controls['tipoUbicacion'].clearValidators();
+            this.lblCalle = 'Calle';
+            this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
           } else {
             this.casaForm.controls['tipoUbicacion'].enable();
             this.casaForm.controls['tipoUbicacion'].addValidators(
               Validators.required
             );
+
+            this.lblCalle = 'Calle o Manzana';
+            this.hintCalle =
+              'No agregue Numero, Ciudad, Barrio, ni Código Postal';
           }
         }
       }),

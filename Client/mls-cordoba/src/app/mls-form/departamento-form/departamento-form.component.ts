@@ -88,6 +88,9 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public startDate = new Date();
   public maxDate = moment();
 
+  public lblCalle: string = 'Calle';
+  public hintCalle: string = 'No agregue numero, ni ciudad. SOLO CALLE';
+
   public destroy$ = new Subject<boolean>();
   public loading$ = new BehaviorSubject<boolean>(false);
 
@@ -129,7 +132,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
     this.departamentoForm = this.formBuilder.group({
       barrio: ['', [Validators.required]],
       calle: ['', [Validators.required]],
-      altura: ['', [Validators.required]],
+      altura: [''],
       tipoDesarrollo: ['', [Validators.required]],
       supCubierta: ['', [Validators.required]],
       tipoSuperficie: ['', [Validators.required]],
