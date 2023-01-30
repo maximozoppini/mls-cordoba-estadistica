@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://mls-cordoba-node.herokuapp.com/api',
+  apiUrl: 'https://mls-estadistica-be.onrender.com',
 };
