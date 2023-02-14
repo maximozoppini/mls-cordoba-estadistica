@@ -14,7 +14,6 @@ export class MlsServiceService {
   public getBarrios(): Observable<Barrio[]> {
     return this.http.get<any>(`${environment.apiUrl}/barrios`).pipe(
       map((data) => {
-        console.log(data);
         return data.map((item: any) => ({
           id: item._id,
           value: item.Identificador,

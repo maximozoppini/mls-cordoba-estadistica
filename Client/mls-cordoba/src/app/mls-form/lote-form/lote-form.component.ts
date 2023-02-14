@@ -6,7 +6,13 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  NgForm,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { MatChipList } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -104,36 +110,41 @@ export class LoteFormComponent implements OnInit, OnDestroy {
         this.barrios = items;
       });
 
-    this.loteForm = this.formBuilder.group({
-      barrio: ['', [Validators.required]],
-      calle: ['', [Validators.required]],
-      altura: [''],
-      esHousing: [false],
-      nomHousing: [{ value: '', disabled: true }],
-      tipoUbicacion: [{ value: '', disabled: true }],
-      tipoFormaLote: ['', [Validators.required]],
-      tipoLote: ['', [Validators.required]],
-      supTerreno: ['', [Validators.required]],
-      metrosFrente: [{ value: '', disabled: true }],
-      metrosFondo: [{ value: '', disabled: true }],
-      tipoOrientacion: ['', [Validators.required]],
-      usoSuelo: ['', [Validators.required]],
+    this.loteForm = this.formBuilder.group(
+      {
+        barrio: ['', [Validators.required]],
+        calle: ['', [Validators.required]],
+        altura: ['', [Validators.required]],
+        esHousing: [false],
+        nomHousing: [{ value: '', disabled: true }],
+        tipoUbicacion: [{ value: '', disabled: true }],
+        tipoFormaLote: ['', [Validators.required]],
+        tipoLote: ['', [Validators.required]],
+        supTerreno: ['', [Validators.required]],
+        metrosFrente: [{ value: '', disabled: true }],
+        metrosFondo: [{ value: '', disabled: true }],
+        tipoOrientacion: ['', [Validators.required]],
+        usoSuelo: ['', [Validators.required]],
 
-      tipoVendedor: ['', [Validators.required]],
-      formalizacionVenta: ['', [Validators.required]],
-      destinoUso: ['', [Validators.required]],
-      formaPagoChipList: ['', [Validators.required]],
-      fechaIngreso: ['', [Validators.required]],
-      precioInicialPeso: [false],
-      ultimoPrecioPeso: [false],
-      montoPrecioHistorico: [''],
-      montoUltimoPrecio: [''],
-      fechaVenta: ['', [Validators.required]],
-      precioVentaPeso: [false],
-      montoPrecioVenta: ['', [Validators.required]],
-      tipoCaptacion: ['', [Validators.required]],
-      tipoVenta: ['', [Validators.required]],
-    });
+        tipoVendedor: ['', [Validators.required]],
+        formalizacionVenta: ['', [Validators.required]],
+        destinoUso: ['', [Validators.required]],
+        formaPagoChipList: ['', [Validators.required]],
+        fechaIngreso: ['', [Validators.required]],
+        precioInicialPeso: [false],
+        ultimoPrecioPeso: [false],
+        montoPrecioHistorico: [''],
+        montoUltimoPrecio: [''],
+        fechaVenta: ['', [Validators.required]],
+        precioVentaPeso: [false],
+        montoPrecioVenta: ['', [Validators.required]],
+        tipoCaptacion: ['', [Validators.required]],
+        tipoVenta: ['', [Validators.required]],
+      },
+      {
+        validators: [this.creatDateRangeValidator()],
+      }
+    );
 
     this.filteredBarrios$ = this.loteForm.controls['barrio'].valueChanges.pipe(
       debounceTime(500),
@@ -148,11 +159,15 @@ export class LoteFormComponent implements OnInit, OnDestroy {
             this.loteForm.controls['tipoUbicacion'].clearValidators();
             this.lblCalle = 'Calle';
             this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
+            this.loteForm.controls['altura'].setValue('');
+            this.loteForm.controls['altura'].addValidators(Validators.required);
           } else {
             this.loteForm.controls['tipoUbicacion'].enable();
             this.loteForm.controls['tipoUbicacion'].addValidators(
               Validators.required
             );
+            this.loteForm.controls['altura'].setValue('');
+            this.loteForm.controls['altura'].clearValidators();
             this.lblCalle = 'Calle o Manzana';
             this.hintCalle =
               'No agregue Numero, Ciudad, Barrio, ni Código Postal';
@@ -235,6 +250,25 @@ export class LoteFormComponent implements OnInit, OnDestroy {
           );
         }
       });
+  }
+
+  creatDateRangeValidator() {
+    return (group: FormGroup): ValidationErrors | null => {
+      const start: moment.Moment = group.controls['fechaIngreso']?.value;
+      const end: moment.Moment = group.controls['fechaVenta']?.value;
+
+      if (start && end) {
+        if (!start.isSameOrBefore(end)) {
+          group.controls['fechaIngreso'].setErrors({ invalidDateRange: true });
+          group.controls['fechaVenta'].setErrors({ invalidDateRange: true });
+        } else {
+          group.controls['fechaIngreso'].setErrors(null);
+          group.controls['fechaVenta'].setErrors(null);
+        }
+      }
+
+      return null;
+    };
   }
 
   displayBarrioFn(barrio: SelecItem): string {

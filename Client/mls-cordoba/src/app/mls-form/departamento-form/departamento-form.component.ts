@@ -10,6 +10,7 @@ import {
   FormControl,
   FormGroup,
   NgForm,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import {
@@ -19,6 +20,7 @@ import {
   map,
   Observable,
   pipe,
+  tap,
   startWith,
   Subject,
   take,
@@ -75,7 +77,9 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public estadosConservacion = tiposEstadosConservacion;
   public estadosOcupacion = estadosOcupacion;
   public tiposVendedor = tiposVendedor;
-  public tiposFormalizacionVenta = tiposFormalizacionVenta;
+  public tiposFormalizacionVenta = tiposFormalizacionVenta.filter(
+    (x) => x.value != 'Solo Boleto'
+  );
   public destinosUso = tiposDestinoUso;
   public allFormasPago = cloneDeep(formasPago);
   public tiposVenta = tiposVenta;
@@ -129,49 +133,70 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
         this.barrios = items;
       });
 
-    this.departamentoForm = this.formBuilder.group({
-      barrio: ['', [Validators.required]],
-      calle: ['', [Validators.required]],
-      altura: [''],
-      tipoDesarrollo: ['', [Validators.required]],
-      supCubierta: ['', [Validators.required]],
-      tipoSuperficie: ['', [Validators.required]],
-      supDescubierta: [{ value: '', disabled: true }],
-      numPiso: ['', [Validators.required]],
-      disposicion: ['', [Validators.required]],
-      dormitorios: ['', [Validators.required]],
-      banios: ['', [Validators.required]],
-      banioSocial: ['', [Validators.required]],
-      cochera: ['', [Validators.required]],
-      extras: [''],
-      extrasChipList: ['', [Validators.required]],
-      categoria: ['', [Validators.required]],
-      antiguedad: ['', [Validators.required]],
-      antiguedadAnios: [{ value: '', disabled: true }],
-      estadoConservacion: ['', [Validators.required]],
-      estadoOcupacion: ['', [Validators.required]],
-      tipoVendedor: ['', [Validators.required]],
-      formalizacionVenta: ['', [Validators.required]],
-      destinoUso: ['', [Validators.required]],
-      formaPagoChipList: ['', [Validators.required]],
-      fechaIngreso: ['', [Validators.required]],
-      amenities: [false],
-      ascensor: [false],
-      precioInicialPeso: [false],
-      ultimoPrecioPeso: [false],
-      montoPrecioHistorico: [''],
-      montoUltimoPrecio: [''],
-      fechaVenta: ['', [Validators.required]],
-      precioVentaPeso: [false],
-      montoPrecioVenta: ['', [Validators.required]],
-      tipoCaptacion: ['', [Validators.required]],
-      tipoVenta: ['', [Validators.required]],
-    });
+    this.departamentoForm = this.formBuilder.group(
+      {
+        barrio: ['', [Validators.required]],
+        calle: ['', [Validators.required]],
+        altura: ['', [Validators.required]],
+        tipoDesarrollo: ['', [Validators.required]],
+        supCubierta: ['', [Validators.required]],
+        tipoSuperficie: ['', [Validators.required]],
+        supDescubierta: [{ value: '', disabled: true }],
+        numPiso: ['', [Validators.required]],
+        disposicion: ['', [Validators.required]],
+        dormitorios: ['', [Validators.required]],
+        banios: ['', [Validators.required]],
+        banioSocial: ['', [Validators.required]],
+        cochera: ['', [Validators.required]],
+        extras: [''],
+        extrasChipList: ['', [Validators.required]],
+        categoria: ['', [Validators.required]],
+        antiguedad: ['', [Validators.required]],
+        antiguedadAnios: [{ value: '', disabled: true }],
+        estadoConservacion: ['', [Validators.required]],
+        estadoOcupacion: ['', [Validators.required]],
+        tipoVendedor: ['', [Validators.required]],
+        formalizacionVenta: ['', [Validators.required]],
+        destinoUso: ['', [Validators.required]],
+        formaPagoChipList: ['', [Validators.required]],
+        fechaIngreso: ['', [Validators.required]],
+        amenities: [false],
+        ascensor: [false],
+        precioInicialPeso: [false],
+        ultimoPrecioPeso: [false],
+        montoPrecioHistorico: [''],
+        montoUltimoPrecio: [''],
+        fechaVenta: ['', [Validators.required]],
+        precioVentaPeso: [false],
+        montoPrecioVenta: ['', [Validators.required]],
+        tipoCaptacion: ['', [Validators.required]],
+        tipoVenta: ['', [Validators.required]],
+      },
+      {
+        validators: [this.creatDateRangeValidator()],
+      }
+    );
 
     this.filteredBarrios$ = this.departamentoForm.controls[
       'barrio'
     ].valueChanges.pipe(
       debounceTime(500),
+      tap((value) => {
+        if (typeof value === 'object') {
+          if (
+            value.tipoBarrio === 'Poblacion' ||
+            value.tipoBarrio === 'Abierto'
+          ) {
+            this.departamentoForm.controls['altura'].setValue('');
+            this.departamentoForm.controls['altura'].addValidators(
+              Validators.required
+            );
+          } else {
+            this.departamentoForm.controls['altura'].setValue('');
+            this.departamentoForm.controls['altura'].clearValidators();
+          }
+        }
+      }),
       filter((value) => typeof value !== 'object'),
       map((searchValue) => {
         return this.barrios.filter((x) =>
@@ -224,6 +249,25 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
           );
         }
       });
+  }
+
+  creatDateRangeValidator() {
+    return (group: FormGroup): ValidationErrors | null => {
+      const start: moment.Moment = group.controls['fechaIngreso']?.value;
+      const end: moment.Moment = group.controls['fechaVenta']?.value;
+
+      if (start && end) {
+        if (!start.isSameOrBefore(end)) {
+          group.controls['fechaIngreso'].setErrors({ invalidDateRange: true });
+          group.controls['fechaVenta'].setErrors({ invalidDateRange: true });
+        } else {
+          group.controls['fechaIngreso'].setErrors(null);
+          group.controls['fechaVenta'].setErrors(null);
+        }
+      }
+
+      return null;
+    };
   }
 
   creacionPipes(control: string, lista: SelecItem[]): Observable<SelecItem[]> {

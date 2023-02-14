@@ -62,10 +62,10 @@
           formControlName="altura"
           placeholder="Ingrese la altura aprox"
         />
-        <!-- <mat-error *ngIf="casaFormContrls['altura'].hasError('required')"
+        <mat-error *ngIf="casaFormContrls['altura'].hasError('required')"
           >Campo requerido</mat-error
         >
-        <mat-hint>No ingrese la altura exacta</mat-hint> -->
+        <!-- <mat-hint>No ingrese la altura exacta</mat-hint> -->
       </mat-form-field>
     </div>
   </div>
@@ -494,6 +494,11 @@
         <mat-error *ngIf="casaFormContrls['fechaIngreso'].hasError('required')"
           >Campo requerido</mat-error
         >
+        <mat-error
+          *ngIf="casaFormContrls['fechaIngreso'].hasError('invalidDateRange')"
+          >La fecha de ingreso debe ser menor o igual a la fecha de
+          venta</mat-error
+        >
       </mat-form-field>
     </div>
     <div class="col-md-4">
@@ -504,8 +509,8 @@
           >PESOS</mat-slide-toggle
         > -->
         <mat-hint
-          >Si hizo Venta en pesos, Cargue el importe en Dolares a Cotización
-          Dólar Billete</mat-hint
+          >Si fue en pesos, Cargue importe a Cotización Dólar Billete de la
+          Fecha de Ingreso</mat-hint
         >
         <mat-error
           *ngIf="casaFormContrls['montoPrecioHistorico'].hasError('required')"
@@ -521,9 +526,9 @@
           >PESOS</mat-slide-toggle
         > -->
         <mat-hint
-          >Si hizo Venta en pesos, Cargue el importe en Dolares a Cotización
-          Dólar Billete</mat-hint
-        >
+          >Si fue en pesos, Cargue importe a Cotización Dólar Billete de la
+          Fecha de ultima Publicación
+        </mat-hint>
         <mat-error
           *ngIf="casaFormContrls['montoUltimoPrecio'].hasError('required')"
           >Campo requerido</mat-error
@@ -553,6 +558,11 @@
         ></mat-datepicker>
         <mat-error *ngIf="casaFormContrls['fechaVenta'].hasError('required')"
           >Campo requerido</mat-error
+        >
+        <mat-error
+          *ngIf="casaFormContrls['fechaVenta'].hasError('invalidDateRange')"
+          >La fecha de ingreso debe ser menor o igual a la fecha de
+          venta</mat-error
         >
       </mat-form-field>
     </div>

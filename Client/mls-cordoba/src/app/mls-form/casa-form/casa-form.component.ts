@@ -6,7 +6,14 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  NgForm,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipList } from '@angular/material/chips';
 import {
@@ -138,51 +145,56 @@ export class CasaFormComponent implements OnInit, OnDestroy {
         this.barrios = items;
       });
 
-    this.casaForm = this.formBuilder.group({
-      barrio: ['', [Validators.required]],
-      calle: ['', [Validators.required]],
-      altura: [''],
-      esHousing: [false],
-      nomHousing: [{ value: '', disabled: true }],
-      tipoUbicacion: [{ value: '', disabled: true }],
-      tipoPropiedad: ['', [Validators.required]],
-      tipoFormaLote: ['', [Validators.required]],
-      tipoLote: ['', [Validators.required]],
-      supTerreno: ['', [Validators.required]],
-      metrosFrente: [{ value: '', disabled: true }],
-      metrosFondo: [{ value: '', disabled: true }],
-      tipoOrientacion: ['', [Validators.required]],
-      metrosCubiertos: ['', [Validators.required]],
-      metrosDescubiertos: ['', [Validators.required]],
+    this.casaForm = this.formBuilder.group(
+      {
+        barrio: ['', [Validators.required]],
+        calle: ['', [Validators.required]],
+        altura: ['', [Validators.required]],
+        esHousing: [false],
+        nomHousing: [{ value: '', disabled: true }],
+        tipoUbicacion: [{ value: '', disabled: true }],
+        tipoPropiedad: ['', [Validators.required]],
+        tipoFormaLote: ['', [Validators.required]],
+        tipoLote: ['', [Validators.required]],
+        supTerreno: ['', [Validators.required]],
+        metrosFrente: [{ value: '', disabled: true }],
+        metrosFondo: [{ value: '', disabled: true }],
+        tipoOrientacion: ['', [Validators.required]],
+        metrosCubiertos: ['', [Validators.required]],
+        metrosDescubiertos: ['', [Validators.required]],
 
-      dormitorios: ['', [Validators.required]],
-      banios: ['', [Validators.required]],
-      banioSocial: ['', [Validators.required]],
-      tipoCochera: ['', [Validators.required]],
-      cantCochera: [{ value: '', disabled: true }],
+        dormitorios: ['', [Validators.required]],
+        banios: ['', [Validators.required]],
+        banioSocial: ['', [Validators.required]],
+        tipoCochera: ['', [Validators.required]],
+        cantCochera: [{ value: '', disabled: true }],
 
-      extras: [''],
-      extrasChipList: ['', [Validators.required]],
-      categoria: ['', [Validators.required]],
-      antiguedad: ['', [Validators.required]],
-      antiguedadAnios: [{ value: '', disabled: true }],
-      estadoConservacion: ['', [Validators.required]],
-      estadoOcupacion: ['', [Validators.required]],
-      tipoVendedor: ['', [Validators.required]],
-      formalizacionVenta: ['', [Validators.required]],
-      destinoUso: ['', [Validators.required]],
-      formaPagoChipList: ['', [Validators.required]],
-      fechaIngreso: ['', [Validators.required]],
-      precioInicialPeso: [false],
-      ultimoPrecioPeso: [false],
-      montoPrecioHistorico: [''],
-      montoUltimoPrecio: [''],
-      fechaVenta: ['', [Validators.required]],
-      precioVentaPeso: [false],
-      montoPrecioVenta: ['', [Validators.required]],
-      tipoCaptacion: ['', [Validators.required]],
-      tipoVenta: ['', [Validators.required]],
-    });
+        extras: [''],
+        extrasChipList: ['', [Validators.required]],
+        categoria: ['', [Validators.required]],
+        antiguedad: ['', [Validators.required]],
+        antiguedadAnios: [{ value: '', disabled: true }],
+        estadoConservacion: ['', [Validators.required]],
+        estadoOcupacion: ['', [Validators.required]],
+        tipoVendedor: ['', [Validators.required]],
+        formalizacionVenta: ['', [Validators.required]],
+        destinoUso: ['', [Validators.required]],
+        formaPagoChipList: ['', [Validators.required]],
+        fechaIngreso: ['', [Validators.required]],
+        precioInicialPeso: [false],
+        ultimoPrecioPeso: [false],
+        montoPrecioHistorico: [''],
+        montoUltimoPrecio: [''],
+        fechaVenta: ['', [Validators.required]],
+        precioVentaPeso: [false],
+        montoPrecioVenta: ['', [Validators.required]],
+        tipoCaptacion: ['', [Validators.required]],
+        tipoVenta: ['', [Validators.required]],
+      },
+      {
+        validators: [this.creatDateRangeValidator()],
+      }
+    );
 
     this.filteredBarrios$ = this.casaForm.controls['barrio'].valueChanges.pipe(
       debounceTime(500),
@@ -197,11 +209,15 @@ export class CasaFormComponent implements OnInit, OnDestroy {
             this.casaForm.controls['tipoUbicacion'].clearValidators();
             this.lblCalle = 'Calle';
             this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
+            this.casaForm.controls['altura'].setValue('');
+            this.casaForm.controls['altura'].addValidators(Validators.required);
           } else {
             this.casaForm.controls['tipoUbicacion'].enable();
             this.casaForm.controls['tipoUbicacion'].addValidators(
               Validators.required
             );
+            this.casaForm.controls['altura'].setValue('');
+            this.casaForm.controls['altura'].clearValidators();
 
             this.lblCalle = 'Calle o Manzana';
             this.hintCalle =
@@ -331,6 +347,25 @@ export class CasaFormComponent implements OnInit, OnDestroy {
           );
         }
       });
+  }
+
+  creatDateRangeValidator() {
+    return (group: FormGroup): ValidationErrors | null => {
+      const start: moment.Moment = group.controls['fechaIngreso']?.value;
+      const end: moment.Moment = group.controls['fechaVenta']?.value;
+
+      if (start && end) {
+        if (!start.isSameOrBefore(end)) {
+          group.controls['fechaIngreso'].setErrors({ invalidDateRange: true });
+          group.controls['fechaVenta'].setErrors({ invalidDateRange: true });
+        } else {
+          group.controls['fechaIngreso'].setErrors(null);
+          group.controls['fechaVenta'].setErrors(null);
+        }
+      }
+
+      return null;
+    };
   }
 
   creacionPipes(control: string, lista: SelecItem[]): Observable<SelecItem[]> {
