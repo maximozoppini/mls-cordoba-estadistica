@@ -159,14 +159,14 @@ export class LoteFormComponent implements OnInit, OnDestroy {
             this.loteForm.controls['tipoUbicacion'].clearValidators();
             this.lblCalle = 'Calle';
             this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
-            this.loteForm.controls['altura'].setValue('');
+            this.loteForm.controls['altura'].setValue(0);
             this.loteForm.controls['altura'].addValidators(Validators.required);
           } else {
             this.loteForm.controls['tipoUbicacion'].enable();
             this.loteForm.controls['tipoUbicacion'].addValidators(
               Validators.required
             );
-            this.loteForm.controls['altura'].setValue('');
+            this.loteForm.controls['altura'].setValue(0);
             this.loteForm.controls['altura'].clearValidators();
             this.lblCalle = 'Calle o Manzana';
             this.hintCalle =

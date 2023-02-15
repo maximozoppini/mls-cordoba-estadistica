@@ -187,12 +187,12 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
             value.tipoBarrio === 'Poblacion' ||
             value.tipoBarrio === 'Abierto'
           ) {
-            this.departamentoForm.controls['altura'].setValue('');
+            this.departamentoForm.controls['altura'].setValue(0);
             this.departamentoForm.controls['altura'].addValidators(
               Validators.required
             );
           } else {
-            this.departamentoForm.controls['altura'].setValue('');
+            this.departamentoForm.controls['altura'].setValue(0);
             this.departamentoForm.controls['altura'].clearValidators();
           }
         }

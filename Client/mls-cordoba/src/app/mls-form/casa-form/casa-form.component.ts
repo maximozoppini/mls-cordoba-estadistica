@@ -209,14 +209,14 @@ export class CasaFormComponent implements OnInit, OnDestroy {
             this.casaForm.controls['tipoUbicacion'].clearValidators();
             this.lblCalle = 'Calle';
             this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
-            this.casaForm.controls['altura'].setValue('');
+            this.casaForm.controls['altura'].setValue(0);
             this.casaForm.controls['altura'].addValidators(Validators.required);
           } else {
             this.casaForm.controls['tipoUbicacion'].enable();
             this.casaForm.controls['tipoUbicacion'].addValidators(
               Validators.required
             );
-            this.casaForm.controls['altura'].setValue('');
+            this.casaForm.controls['altura'].setValue(0);
             this.casaForm.controls['altura'].clearValidators();
 
             this.lblCalle = 'Calle o Manzana';
