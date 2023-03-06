@@ -94,6 +94,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
 
   public lblCalle: string = 'Calle';
   public hintCalle: string = 'No agregue numero, ni ciudad. SOLO CALLE';
+  public lblAltura: string = 'Altura';
 
   public destroy$ = new Subject<boolean>();
   public loading$ = new BehaviorSubject<boolean>(false);
@@ -187,11 +188,13 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
             value.tipoBarrio === 'Poblacion' ||
             value.tipoBarrio === 'Abierto'
           ) {
+            this.lblAltura = 'Altura';
             this.departamentoForm.controls['altura'].setValue(0);
             this.departamentoForm.controls['altura'].addValidators(
               Validators.required
             );
           } else {
+            this.lblAltura = 'Lote';
             this.departamentoForm.controls['altura'].setValue(0);
             this.departamentoForm.controls['altura'].clearValidators();
           }
