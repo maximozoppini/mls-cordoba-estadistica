@@ -100,6 +100,7 @@ export class CasaFormComponent implements OnInit, OnDestroy {
   public lblCalle: string = 'Calle';
   public hintCalle: string = 'No agregue numero, ni ciudad. SOLO CALLE';
   public lblAltura: string = 'Altura';
+  public placeholderCalle: string = 'Ingrese la calle únicamente';
 
   public barrios: SelecItem[] = [];
   public extras: SelecItem[] = [];
@@ -210,6 +211,7 @@ export class CasaFormComponent implements OnInit, OnDestroy {
             this.casaForm.controls['tipoUbicacion'].clearValidators();
             this.lblCalle = 'Calle';
             this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
+            this.placeholderCalle = 'Ingrese la calle únicamente';
             this.lblAltura = 'Altura';
             this.casaForm.controls['altura'].setValue(0);
             this.casaForm.controls['altura'].addValidators(Validators.required);
@@ -220,10 +222,11 @@ export class CasaFormComponent implements OnInit, OnDestroy {
             );
             this.casaForm.controls['altura'].setValue(0);
             this.casaForm.controls['altura'].clearValidators();
+            this.placeholderCalle = 'Ingrese el número de Manzana';
 
             this.lblCalle = 'Manzana';
             this.hintCalle =
-              'No agregue Numero, Ciudad, Barrio, ni Código Postal';
+              'Ingrese SOLO número de Manzana (ni barrio, ni ciudad)';
             this.lblAltura = 'Lote';
           }
         }

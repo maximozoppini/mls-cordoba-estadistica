@@ -45,7 +45,7 @@
         <input
           matInput
           formControlName="calle"
-          placeholder="Ingrese la calle unicamente"
+          placeholder="{{ placeholderCalle }}"
         />
         <mat-error *ngIf="deptoFormContrls['calle'].hasError('required')"
           >Campo requerido</mat-error

@@ -40,7 +40,7 @@
         <input
           matInput
           formControlName="calle"
-          placeholder="Ingrese la calle unicamente"
+          placeholder="{{ placeholderCalle }}"
         />
         <mat-error *ngIf="casaFormContrls['calle'].hasError('required')"
           >Campo requerido</mat-error

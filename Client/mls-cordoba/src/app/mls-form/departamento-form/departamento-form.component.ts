@@ -95,6 +95,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public lblCalle: string = 'Calle';
   public hintCalle: string = 'No agregue numero, ni ciudad. SOLO CALLE';
   public lblAltura: string = 'Altura';
+  public placeholderCalle: string = 'Ingrese la calle únicamente';
 
   public destroy$ = new Subject<boolean>();
   public loading$ = new BehaviorSubject<boolean>(false);
@@ -191,6 +192,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
             this.lblCalle = 'Calle';
             this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
             this.lblAltura = 'Altura';
+            this.placeholderCalle = 'Ingrese la calle únicamente';
             this.departamentoForm.controls['altura'].setValue(0);
             this.departamentoForm.controls['altura'].addValidators(
               Validators.required
@@ -198,7 +200,9 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
           } else {
             this.lblCalle = 'Manzana';
             this.hintCalle =
-              'No agregue Numero, Ciudad, Barrio, ni Código Postal';
+              'Ingrese SOLO número de Manzana (ni barrio, ni ciudad)';
+            this.placeholderCalle = 'Ingrese el número de Manzana';
+
             this.lblAltura = 'Lote';
             this.departamentoForm.controls['altura'].setValue(0);
             this.departamentoForm.controls['altura'].clearValidators();

@@ -40,7 +40,7 @@
         <input
           matInput
           formControlName="calle"
-          placeholder="Ingrese la calle unicamente"
+          placeholder="{{ placeholderCalle }}"
         />
         <mat-error *ngIf="loteFormContrls['calle'].hasError('required')"
           >Campo requerido</mat-error
@@ -60,7 +60,7 @@
           min="0"
           type="number"
           formControlName="altura"
-          placeholder="Ingrese la altura aprox"
+          placeholder="Ingrese la {{ lblAltura }} aprox"
         />
         <mat-error *ngIf="loteFormContrls['altura'].hasError('required')"
           >Campo requerido</mat-error
