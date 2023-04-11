@@ -188,12 +188,17 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
             value.tipoBarrio === 'Poblacion' ||
             value.tipoBarrio === 'Abierto'
           ) {
+            this.lblCalle = 'Calle';
+            this.hintCalle = 'No agregue numero, ni ciudad. SOLO CALLE';
             this.lblAltura = 'Altura';
             this.departamentoForm.controls['altura'].setValue(0);
             this.departamentoForm.controls['altura'].addValidators(
               Validators.required
             );
           } else {
+            this.lblCalle = 'Manzana';
+            this.hintCalle =
+              'No agregue Numero, Ciudad, Barrio, ni Código Postal';
             this.lblAltura = 'Lote';
             this.departamentoForm.controls['altura'].setValue(0);
             this.departamentoForm.controls['altura'].clearValidators();
@@ -325,7 +330,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
     let depto = this.departamentoForm.value;
     depto.fechaIngresoTexto = depto.fechaIngreso.format('YYYY-MM-DD');
     depto.fechaVentaTexto = depto.fechaVenta.format('YYYY-MM-DD');
-    depto.extras = depto.extrasChipList.map((x: any) => x.id);
+    //depto.extras = depto.extrasChipList.map((x: any) => x.id);
     depto.formasPagoChipList = this.formasPago.map((x: any) => x.id);
 
     this.loading$.next(true);

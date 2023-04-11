@@ -204,20 +204,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-6">
-      <mat-form-field class="full-width" appearance="outline">
-        <mat-label>Cochera</mat-label>
-        <mat-select formControlName="cochera">
-          <mat-option *ngFor="let item of tiposCochera" [value]="item">
-            {{ item.value }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="deptoFormContrls['cochera'].hasError('required')"
-          >Campo requerido</mat-error
-        >
-      </mat-form-field>
-    </div>
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Extras</mat-label>
         <mat-chip-list
@@ -253,10 +240,23 @@
         </mat-autocomplete>
         <mat-error>Campo requerido</mat-error>
       </mat-form-field>
-    </div>
+    </div> -->
   </div>
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Cochera</mat-label>
+        <mat-select formControlName="cochera">
+          <mat-option *ngFor="let item of tiposCochera" [value]="item">
+            {{ item.value }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="deptoFormContrls['cochera'].hasError('required')"
+          >Campo requerido</mat-error
+        >
+      </mat-form-field>
+    </div>
+    <div class="col-md-2">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Categoria</mat-label>
         <mat-select formControlName="categoria">
@@ -269,7 +269,7 @@
         >
       </mat-form-field>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Antigüedad</mat-label>
         <mat-select formControlName="antiguedad">

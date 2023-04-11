@@ -120,7 +120,7 @@ app.post("/api/departamento", (req, res) => {
           Baños: req.body.banios.id,
           "Baño social": req.body.banioSocial.id,
           Cochera: req.body.cochera.id,
-          Extras: req.body.extras,
+          //Extras: req.body.extras,
           Antigüedad: req.body.antiguedad.id,
           "Cantidad de años": req.body.antiguedadAnios,
           Categoría: req.body.categoria.id,
