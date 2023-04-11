@@ -170,10 +170,10 @@ export class LoteFormComponent implements OnInit, OnDestroy {
             );
             this.loteForm.controls['altura'].setValue(0);
             this.loteForm.controls['altura'].clearValidators();
-            this.lblCalle = 'Calle o Manzana';
+            this.lblCalle = 'Manzana';
             this.hintCalle =
               'No agregue Numero, Ciudad, Barrio, ni Código Postal';
-            this.lblAltura = 'Lore';
+            this.lblAltura = 'Lote';
           }
         }
       }),
