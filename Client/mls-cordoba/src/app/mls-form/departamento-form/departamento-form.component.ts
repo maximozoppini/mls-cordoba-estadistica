@@ -70,7 +70,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public dormitorios = tiposDormitorios;
   public banios = numerosBanios;
   public baniosSociales = numerosBanioSocial;
-  public todosLosExtras = cloneDeep(tiposExtras);
+  //public todosLosExtras = cloneDeep(tiposExtras);
   public tiposCochera = tiposCochera;
   public categorias = tiposCategoria;
   public antiguedades = tiposAntiguedad;
@@ -86,7 +86,7 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public tiposCaptacion = tiposCaptacion;
 
   public barrios: SelecItem[] = [];
-  public extras: SelecItem[] = [];
+  //public extras: SelecItem[] = [];
   public formasPago: SelecItem[] = [];
   public departamentoForm!: FormGroup;
   public startDate = new Date();
@@ -101,11 +101,11 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
   public loading$ = new BehaviorSubject<boolean>(false);
 
   public filteredBarrios$!: Observable<SelecItem[]>;
-  public filteredExtras$!: Observable<SelecItem[]>;
+  //public filteredExtras$!: Observable<SelecItem[]>;
 
-  @ViewChild('extraInput') extraInput!: ElementRef<HTMLInputElement>;
+  //@ViewChild('extraInput') extraInput!: ElementRef<HTMLInputElement>;
   @ViewChild('chipList') chipList!: MatChipList;
-  @ViewChild('chipListExtras') chipListExtras!: MatChipList;
+  //@ViewChild('chipListExtras') chipListExtras!: MatChipList;
   @ViewChild('form') form!: NgForm;
 
   get deptoFormContrls() {
@@ -150,8 +150,8 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
         banios: ['', [Validators.required]],
         banioSocial: ['', [Validators.required]],
         cochera: ['', [Validators.required]],
-        extras: [''],
-        extrasChipList: ['', [Validators.required]],
+        //extras: [''],
+        //extrasChipList: ['', [Validators.required]],
         categoria: ['', [Validators.required]],
         antiguedad: ['', [Validators.required]],
         antiguedadAnios: [{ value: '', disabled: true }],
@@ -216,13 +216,13 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
         );
       })
     );
-    this.filteredExtras$ = this.creacionPipes('extras', this.todosLosExtras);
+    //this.filteredExtras$ = this.creacionPipes('extras', this.todosLosExtras);
 
-    this.departamentoForm.controls['extrasChipList'].statusChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (status) => (this.chipListExtras.errorState = status === 'INVALID')
-      );
+    // this.departamentoForm.controls['extrasChipList'].statusChanges
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe(
+    //     (status) => (this.chipListExtras.errorState = status === 'INVALID')
+    //   );
 
     this.departamentoForm.controls['tipoSuperficie'].valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -309,22 +309,22 @@ export class DepartamentoFormComponent implements OnInit, OnDestroy {
     item.selected = $event.selected;
   }
 
-  removeExtra(extra: SelecItem): void {
-    extra.selected = false;
-    const index = this.extras.indexOf(extra);
-    if (index >= 0) {
-      this.extras.splice(index, 1);
-    }
-    this.departamentoForm.controls['extras'].setValue(null);
-    this.departamentoForm.controls['extrasChipList'].setValue(this.extras);
-  }
-  selectedExtras(event: MatAutocompleteSelectedEvent): void {
-    event.option.value.selected = true;
-    this.extras.push(event.option.value);
-    this.extraInput.nativeElement.value = '';
-    this.departamentoForm.controls['extras'].setValue(null);
-    this.departamentoForm.controls['extrasChipList'].setValue(this.extras);
-  }
+  // removeExtra(extra: SelecItem): void {
+  //   extra.selected = false;
+  //   const index = this.extras.indexOf(extra);
+  //   if (index >= 0) {
+  //     this.extras.splice(index, 1);
+  //   }
+  //   this.departamentoForm.controls['extras'].setValue(null);
+  //   this.departamentoForm.controls['extrasChipList'].setValue(this.extras);
+  // }
+  // selectedExtras(event: MatAutocompleteSelectedEvent): void {
+  //   event.option.value.selected = true;
+  //   this.extras.push(event.option.value);
+  //   this.extraInput.nativeElement.value = '';
+  //   this.departamentoForm.controls['extras'].setValue(null);
+  //   this.departamentoForm.controls['extrasChipList'].setValue(this.extras);
+  // }
 
   enviarEnable(): boolean {
     return !this.departamentoForm.valid;
