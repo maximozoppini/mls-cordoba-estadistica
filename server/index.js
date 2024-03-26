@@ -22,8 +22,6 @@ app.get("/", (req, res) => {
 app.post("/updateBarrios", (req, res) => {
   const mongoClient = mongo.MongoClient;
   let barrios = [];
-  console.log(barrios);
-  console.log(barrios);
   const base = require("airtable").base(req.query.base);
   base("Barrios")
     .select({
@@ -43,18 +41,20 @@ app.post("/updateBarrios", (req, res) => {
           return;
         }
         if (barrios.length > 0) {
+          console.log(barrios);
           mongoClient.connect(process.env.mg_db_uri, function (err, db) {
+            console.log(err);
             let dbo = db.db("mlsCordobaMongo");
-            dbo.collection("barrios").drop(function (err, delOK) {
+            dbo.collection(process.env.mg_db_collection).drop(function (err, delOK) {
               if (err) throw err;
               if (delOK) console.log("Collection deleted");
             });
-            dbo.createCollection("barrios", function (err, res) {
+            dbo.createCollection(process.env.mg_db_collection, function (err, res) {
               if (err) throw err;
               console.log("Collection created!");
             });
             dbo
-              .collection("barrios")
+              .collection(process.env.mg_db_collection)
               .insertMany(barrios, function (error, respuesta) {
                 if (error) {
                   console.error("no se pudo registrar en mongo");
@@ -69,6 +69,22 @@ app.post("/updateBarrios", (req, res) => {
               });
           });
         }
+        else{
+          console.log("no hay barrios");
+          mongoClient.connect(process.env.mg_db_uri, function (err, db) {
+            console.log(err);
+            let dbo = db.db("mlsCordobaMongo");
+            dbo.collection(process.env.mg_db_collection).drop(function (err, delOK) {
+              if (err) throw err;
+              if (delOK) console.log("Collection deleted");
+            });
+            dbo.createCollection(process.env.mg_db_collection, function (err, res) {
+              if (err) throw err;
+              console.log("Collection created!");
+            });
+          });
+          res.send("no hay barrios en la base");
+        }
       }
     );
 });
@@ -78,7 +94,7 @@ app.get("/api/barrios", (req, res) => {
   mongoClient.connect(process.env.mg_db_uri, function (err, db) {
     var dbo = db.db("mlsCordobaMongo");
     dbo
-      .collection("barrios")
+      .collection(process.env.mg_db_collection)
       .find(
         {},
         {
@@ -100,7 +116,7 @@ app.get("/api/barrios", (req, res) => {
 });
 
 app.post("/api/departamento", (req, res) => {
-  const base = require("airtable").base("appAPeVcmiZuk0Kl2");
+  const base = require("airtable").base(process.env.airtable_base);
   base("Departamentos").create(
     [
       {
@@ -171,7 +187,7 @@ app.post("/api/departamento", (req, res) => {
 
 app.post("/api/casa", (req, res) => {
   console.log(req.body);
-  const base = require("airtable").base("appAPeVcmiZuk0Kl2");
+  const base = require("airtable").base(process.env.airtable_base);
   base("PH- Casas - Duplex").create(
     [
       {
@@ -250,7 +266,7 @@ app.post("/api/casa", (req, res) => {
 
 app.post("/api/lote", (req, res) => {
   console.log(req.body);
-  const base = require("airtable").base("appAPeVcmiZuk0Kl2");
+  const base = require("airtable").base(process.env.airtable_base);
   base("Lotes").create(
     [
       {
