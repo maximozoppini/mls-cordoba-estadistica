@@ -60,6 +60,27 @@
               ],
               "outputHashing": "all"
             },
+            "plata": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "2mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.plata.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -76,6 +97,9 @@
           "configurations": {
             "production": {
               "browserTarget": "mls-cordoba:build:production"
+            },
+            "plata": {
+              "browserTarget": "mls-cordoba:build:plata"
             },
             "development": {
               "browserTarget": "mls-cordoba:build:development"
